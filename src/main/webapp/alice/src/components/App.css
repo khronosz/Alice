@@ -1,0 +1,63 @@
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+.card {
+  background-color: #f7f7f7;
+  padding: 20px 25px 30px;
+  margin: 0 auto 25px;
+  margin-top: 50px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+table>tbody,thead {
+  color: white !important;
+  border: 1px solid #dee2e6 !important;
+}
+
+table th,td {
+    border: 1px solid #454d55 !important;
+}
+
+table>tbody>tr:nth-child(2n+1){
+    background-color: rgba(255,255,255,.05) !important;
+}
+
+table>tbody>tr:hover {
+    background-color:rgba(255,255,255,.075) !important;
+    color: white !important;
+}
+
+tfoot > tr > td {
+  border: none !important;
+  padding-top: 15px !important;
+}
+
+tfoot > tr > td > div:first-child {
+  padding-right: 15px !important;
+}
+
+.chevron-button:focus {
+    border:none !important;
+    box-shadow: none !important;
+}
+
+.chevron-button>svg:hover {
+    color: gray !important;
+}
+
+.tooltip-inner {
+    max-width: inherit;
+    text-align: left !important;
+    background-color: #17a2b8 !important;
+}
+
+.arrow::before {
+    border-right-color: #17a2b8 !important;
+}
