@@ -54,7 +54,7 @@ class UserContainer extends React.Component {
 
     updateUser = event => {
         event.preventDefault();
-        UserService.update(this.state.user, (response, error) => {
+        UserService.update(this.state.user.id, this.state.user, (response, error) => {
             if (!error) {
                 this.setState({ message: "User Updated Successfully!" });
                 this.resetUser()

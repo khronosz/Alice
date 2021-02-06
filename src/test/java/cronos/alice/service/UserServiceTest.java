@@ -151,15 +151,15 @@ public class UserServiceTest {
 		assertEquals(dto.getLastValidation(), jane.getLastValidation());
 	}
 
-	@Test
-	public void testConvertToEntity() {
-		UserDto dto = new UserDto(jane);
-		dto.setDirectManagerName(manager.getUsername());
-		User user = userService.convertToEntity(dto);
-
-		assertEquals(user.getId(), jane.getId());
-		assertEquals(user.getDirectManagerId(), manager.getId());
-	}
+//	@Test
+//	public void testConvertToEntity() {
+//		UserDto dto = new UserDto(jane);
+//		dto.setDirectManagerName(manager.getUsername());
+//		User user = userService.convertToEntity(dto);
+//
+//		assertEquals(user.getId(), jane.getId());
+//		assertEquals(user.getDirectManagerId(), manager.getId());
+//	}
 
 	@Test
 	public void testConvertToDto() {

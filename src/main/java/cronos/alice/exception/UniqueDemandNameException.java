@@ -1,10 +1,10 @@
 package cronos.alice.exception;
 
-public class DemandNameAlreadyExistsException extends RuntimeException {
+public class UniqueDemandNameException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public DemandNameAlreadyExistsException(final String message) {
+	public UniqueDemandNameException(final String message) {
 		super(message);
 	}
 }

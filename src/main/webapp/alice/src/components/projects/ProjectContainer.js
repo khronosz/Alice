@@ -28,10 +28,10 @@ class ProjectContainer extends React.Component {
         ProjectService.save(this.state.project, (response, error) => {
             if (!error) {
                 this.setState({ message: "Project Saved Successfully!" });
+                this.resetProject()
                 setTimeout(() => this.toProjects(), 500);
             } else this.setState({ error: error })
         })
-        this.resetProject()
     }
 
     updateProject = (event) => {
@@ -39,10 +39,10 @@ class ProjectContainer extends React.Component {
         ProjectService.update(this.state.project, (response, error) => {
             if (!error) {
                 this.setState({ message: "Project Updated Successfully!" });
+                this.resetProject()
                 setTimeout(() => this.toProjects(), 500);
             } else this.setState({ error: error })
         })
-        this.resetProject()
     }
 
     resetProject = () => this.setState(prevState => ({

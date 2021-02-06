@@ -1,10 +1,10 @@
 package cronos.alice.exception;
 
-public class EmailAlreadyExistsException extends RuntimeException {
+public class UniqueEmailAddressException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public EmailAlreadyExistsException(final String message) {
+	public UniqueEmailAddressException(final String message) {
 		super(message);
 	}
 }

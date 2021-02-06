@@ -17,9 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.Tuple;
+import cronos.alice.exception.UniqueEmailAddressException;
 import cronos.alice.exception.ExportFailedException;
 import cronos.alice.exception.InvalidPasswordFormatException;
 import cronos.alice.exception.PasswordDoesNotMatchException;
+import cronos.alice.exception.UniqueUsernameException;
 import cronos.alice.model.UserDetailsImpl;
 import cronos.alice.model.dto.NonUtilizedUserDto;
 import cronos.alice.model.dto.NonValidatedUserDto;
@@ -42,10 +44,13 @@ public class UserService {
 
 	private final PasswordEncoder passwordEncoder;
 
+	private final List<User> users;
+
 	@Autowired
 	public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.users = userRepository.findAll();
 	}
 
 	public User getLoggedInUser() {
@@ -136,18 +141,16 @@ public class UserService {
 	@Transactional
 	public User save(User user) {
 		log.info("Save user: " + user.getUsername());
+		users.forEach(u -> {
+			if (u.getUsername().equalsIgnoreCase(user.getUsername()) && !u.getId().equals(user.getId())) throw new UniqueUsernameException("Username already exists!");
+			if (u.getEmail().equalsIgnoreCase(user.getEmail()) && !u.getId().equals(user.getId())) throw new UniqueEmailAddressException("Email already exists!");
+		});
 		return userRepository.save(user);
 	}
 
-	public User convertToEntity(UserDto dto) {
-		log.debug("Convert dto to entity: " + dto.getUsername());
-		User user = dto.getId() != null ? findById(dto.getId()) : new User();
-		updateUserFields(dto, user);
-		return user;
-	}
-
-	private void updateUserFields(final UserDto dto, final User user) {
+	public void updateUserFields(final UserDto dto, final User user) {
 		User directManager = userRepository.findByUsername(dto.getDirectManagerName()).orElseThrow(() -> new RuntimeException("User not found with the name: " + dto.getDirectManagerName()));
+		log.debug("Convert dto to entity: " + dto.getUsername());
 		user.setUsername(dto.getUsername());
 		user.setJob(dto.getJob());
 		user.setDepartment(dto.getDepartment());
@@ -168,8 +171,8 @@ public class UserService {
 	}
 
 	@Transactional
-	public TeamDto updateLastValidation(TeamDto dto) {
-		User user = findById(dto.getId());
+	public TeamDto updateLastValidation(Long id) {
+		User user = findById(id);
 		user.setLastValidation(LocalDate.now());
 		userRepository.save(user);
 		return findTeamDtoById(user.getId());

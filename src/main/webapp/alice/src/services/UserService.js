@@ -8,7 +8,7 @@ class UserService extends Service {
 
     findById = (id, callback) => this.get("/user/" + id, callback)
 
-    update = (user, callback) => this.put("/user", user, callback)
+    update = (id, user, callback) => this.put("/user/" + id, user, callback)
 
     save = (user, callback) => this.post("/user", user, callback)
 

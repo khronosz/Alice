@@ -40,43 +40,43 @@ export function Profile(props) {
                                         <Form.Row>
                                             <FormGroup as={Col} controlId="formUserName">
                                                 <Form.Label>
-                                                    Name
+                                                  Name
                                                 </Form.Label>
-                                                <Form.Control disabled type="text" name="username" defaultValue={user.username} onChange={userChange}/>
+                                                <Form.Control disabled type="text" name="username" defaultValue={user.username} onChange={userChange} style={{border: "none"}}/>
                                             </FormGroup>
                                             <FormGroup as={Col} controlId={"formUserJob"}>
                                                 <Form.Label>
-                                                    Job
+                                                  Job
                                                 </Form.Label>
                                                 <Form.Control type="text" name="job" defaultValue={user.job} onChange={userChange}/>
                                             </FormGroup>
                                         </Form.Row>
                                         <Form.Row>
                                             <FormGroup as={Col} controlId="formUserDepartment">
-                                                <Form.Label>
-                                                    City
-                                                </Form.Label>
-                                                <Form.Control type="text" name="city" defaultValue={user.city} onChange={userChange}/>
+                                              <Form.Label>
+                                                Department
+                                              </Form.Label>
+                                              <Form.Control disabled defaultValue={user.department} style={{border: "none"}}/>
                                             </FormGroup>
                                             <FormGroup as={Col} controlId="formUserEmail">
                                                 <Form.Label>
-                                                    Email
+                                                  Email
                                                 </Form.Label>
                                                 <Form.Control type="email" name="email" defaultValue={user.email} onChange={userChange}/>
                                             </FormGroup>
                                         </Form.Row>
                                         <Form.Row>
+                                            <FormGroup as={Col} controlId="formUserLevel">
+                                              <Form.Label>
+                                                Level
+                                              </Form.Label>
+                                              <Form.Control disabled defaultValue={user.level} style={{border: "none"}}/>
+                                            </FormGroup>
                                             <FormGroup as={Col} controlId="formUserCity">
                                                 <Form.Label>
-                                                    Department
+                                                  City
                                                 </Form.Label>
-                                                <Form.Control disabled defaultValue={user.department}/>
-                                            </FormGroup>
-                                            <FormGroup as={Col} controlId="formUserLevel">
-                                                <Form.Label>
-                                                    Level
-                                                </Form.Label>
-                                                <Form.Control disabled defaultValue={user.level}/>
+                                                <Form.Control type="text" name="city" defaultValue={user.city} onChange={userChange}/>
                                             </FormGroup>
                                         </Form.Row>
                                         <Button variant={'success'} size="sm" type="submit">

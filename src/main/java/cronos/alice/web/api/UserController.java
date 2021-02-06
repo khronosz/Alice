@@ -32,21 +32,31 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/user/{id}")
-	public ResponseEntity<UserDto> findById(@PathVariable("id") Long id) {
+	public ResponseEntity<UserDto> findById(@PathVariable Long id) {
 		User user = userService.findById(id);
 		return new ResponseEntity<>(userService.convertToDto(user), HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/user", consumes = APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserDto> save(@RequestBody UserDto dto) {
-		User user = userService.convertToEntity(dto);
+		User user = new User();
+		userService.updateUserFields(dto, user);
 		User userCreated = userService.save(user);
 		return new ResponseEntity<>(userService.convertToDto(userCreated), HttpStatus.OK);
 	}
 
-	@PutMapping(value = "/user", consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDto> update(@RequestBody UserDto dto) {
-		User user = userService.convertToEntity(dto);
+	@PutMapping(value = "/user/{id}", consumes = APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserDto> update(@RequestBody UserDto dto, @PathVariable Long id) {
+		User user = userService.findById(id);
+		userService.updateUserFields(dto, user);
+		User userCreated = userService.save(user);
+		return new ResponseEntity<>(userService.convertToDto(userCreated), HttpStatus.OK);
+	}
+
+	@PutMapping(value = "/profile", consumes = APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserDto> updateProfile(@RequestBody UserDto dto) {
+		User user = userService.findById(dto.getId());
+		userService.updateUserFields(dto, user);
 		User userCreated = userService.save(user);
 		return new ResponseEntity<>(userService.convertToDto(userCreated), HttpStatus.OK);
 	}

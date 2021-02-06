@@ -38,7 +38,7 @@ public class TeamController {
 
 	@PutMapping(value = "/team/{id}")
 	public ResponseEntity<TeamDto> updateLastValidation(@PathVariable("id") Long id) {
-		return new ResponseEntity<>(userService.updateLastValidation(userService.findTeamDtoById(id)), HttpStatus.OK);
+		return new ResponseEntity<>(userService.updateLastValidation(id), HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/directManagers")

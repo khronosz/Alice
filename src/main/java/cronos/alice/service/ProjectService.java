@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cronos.alice.exception.ExportFailedException;
 import cronos.alice.exception.IllegalDateException;
+import cronos.alice.exception.UniqueProjectsSapException;
 import cronos.alice.model.dto.DemandDto;
 import cronos.alice.model.dto.ProjectDescriptionDto;
 import cronos.alice.model.dto.ProjectDto;
@@ -33,10 +34,13 @@ public class ProjectService {
 
 	private final DemandService demandService;
 
+	private final List<Project> projects;
+
 	@Autowired
 	public ProjectService(final ProjectRepository projectRepository, final DemandService demandService) {
 		this.projectRepository = projectRepository;
 		this.demandService = demandService;
+		this.projects = projectRepository.findAll();
 	}
 
 	public Project findById(Long id) {
@@ -88,6 +92,9 @@ public class ProjectService {
 
 	@Transactional
 	public Project save(Project project) {
+		projects.forEach(p -> {
+			if (p.getSap().equalsIgnoreCase(project.getSap()) && !p.getId().equals(project.getId())) throw new UniqueProjectsSapException("SAP number already exists!");
+		});
 		if (project.getStart() != null && project.getEnd() != null && project.getEnd().isBefore(project.getStart())) {
 			throw new IllegalDateException("End date cannot be earlier than start date!");
 		}

@@ -1,10 +1,10 @@
 package cronos.alice.exception;
 
-public class UsernameAlreadyExistsException extends RuntimeException {
+public class UniqueUsernameException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public UsernameAlreadyExistsException(final String message) {
+	public UniqueUsernameException(final String message) {
 		super(message);
 	}
 }

@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cronos.alice.exception.ExportFailedException;
 import cronos.alice.exception.IllegalDateException;
+import cronos.alice.exception.UniqueDemandNameException;
+import cronos.alice.exception.UniqueDemandsMibException;
+import cronos.alice.exception.UniqueDemandsUserProjectException;
 import cronos.alice.exception.UtilizationTooMuchException;
 import cronos.alice.model.dto.DemandDto;
 import cronos.alice.model.entity.Demand;
@@ -33,11 +36,14 @@ public class DemandService {
 
 	private final UserService userService;
 
+	private final List<Demand> demands;
+
 	@Autowired
 	public DemandService(final DemandRepository demandRepository, final ProjectRepository projectRepository, final UserService userService) {
 		this.demandRepository = demandRepository;
 		this.projectRepository = projectRepository;
 		this.userService = userService;
+		this.demands = demandRepository.findAll();
 	}
 
 	public List<DemandDto> findAllByUserId(Long id) {
@@ -68,6 +74,11 @@ public class DemandService {
 
 	@Transactional
 	public Demand save(Demand demand) {
+		demands.forEach(d -> {
+			if (d.getName().equalsIgnoreCase(demand.getName()) && !d.getId().equals(demand.getId())) throw new UniqueDemandNameException("Demand name already exists!");
+			if (d.getMib().equalsIgnoreCase(demand.getMib()) && !d.getId().equals(demand.getId())) throw new UniqueDemandsMibException("Demands MIB already exists!");
+			if (d.getUserId().equals(demand.getUserId()) && d.getProjectId().equals(demand.getProjectId()) && !d.getId().equals(demand.getId())) throw new UniqueDemandsUserProjectException("User already exists on the project!");
+		});
 		if (demand.getProjectStart() != null && demand.getProjectEnd() != null && demand.getProjectEnd().isBefore(demand.getProjectStart())) {
 			throw new IllegalDateException("End date cannot be earlier than start date!");
 		}
@@ -108,7 +119,7 @@ public class DemandService {
 	public DemandDto convertToDto(Demand demand) {
 		Project project = projectRepository.findById(demand.getProjectId()).orElseThrow(() -> new RuntimeException("Project not found with the ID: " + demand.getProjectId()));
 		DemandDto dto = new DemandDto(demand);
-		dto.setUsername(userService.findById(demand.getUserId()).getUsername());
+		dto.setUsername(demand.getUserId() != null ? userService.findById(demand.getUserId()).getUsername() : "");
 		dto.setProjectName(project.getProjectName());
 		return dto;
 	}

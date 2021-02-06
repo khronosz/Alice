@@ -16,11 +16,17 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import cronos.alice.exception.UniqueDemandNameException;
+import cronos.alice.exception.UniqueDemandsMibException;
+import cronos.alice.exception.UniqueDemandsUserProjectException;
+import cronos.alice.exception.UniqueEmailAddressException;
 import cronos.alice.exception.ErrorMessage;
 import cronos.alice.exception.ExportFailedException;
 import cronos.alice.exception.IllegalDateException;
 import cronos.alice.exception.InvalidPasswordFormatException;
 import cronos.alice.exception.PasswordDoesNotMatchException;
+import cronos.alice.exception.UniqueProjectsSapException;
+import cronos.alice.exception.UniqueUsernameException;
 import cronos.alice.exception.UtilizationTooMuchException;
 
 @ControllerAdvice
@@ -91,38 +97,56 @@ public class ExceptionHandlerController {
 		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(UniqueEmailAddressException.class)
+	public ResponseEntity<ErrorMessage> uniqueEmailAddressExceptionHandler(UniqueEmailAddressException e) {
+		ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+		log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
+		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(UniqueUsernameException.class)
+	public ResponseEntity<ErrorMessage> uniqueUsernameExceptionHandler(UniqueUsernameException e) {
+		ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+		log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
+		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(UniqueDemandNameException.class)
+	public ResponseEntity<ErrorMessage> uniqueDemandNameExceptionHandler(UniqueDemandNameException e) {
+		ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+		log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
+		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(UniqueDemandsMibException.class)
+	public ResponseEntity<ErrorMessage> uniqueDemandsMibExceptionHandler(UniqueDemandsMibException e) {
+		ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+		log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
+		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(UniqueDemandsUserProjectException.class)
+	public ResponseEntity<ErrorMessage> uniqueDemandsUserProjectExceptionHandler(UniqueDemandsUserProjectException e) {
+		ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+		log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
+		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(UniqueProjectsSapException.class)
+	public ResponseEntity<ErrorMessage> uniqueProjectsSapExceptionHandler(UniqueProjectsSapException e) {
+		ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+		log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
+		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+	}
+
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<ErrorMessage> dataIntegrityViolationExceptionHandler(DataIntegrityViolationException e) {
 		ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase());
 		String msg = Objects.requireNonNull(e.getMessage()).substring(52);
 		msg = msg.substring(0, msg.indexOf("]"));
 		switch (msg) {
-			case "UNIQUE_DEMANDS_NAME":
-				message.setMessage("Duplicate Error! - Demand name must be unique!");
-				log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
-				return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-			case "UNIQUE_DEMANDS_MIB":
-				message.setMessage("Duplicate Error! - MIB must be unique!");
-				log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
-				return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-			case "UNIQUE_DEMANDS_USER_PROJECT":
-				message.setMessage("Duplicate Error! - User already exists on the project!");
-				log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
-				return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-			case "UNIQUE_PROJECTS_SAP":
-				message.setMessage("Duplicate Error! - SAP number must be unique!");
-				log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
-				return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 			case "UNIQUE_ROLE_NAME":
 				message.setMessage("Duplicate Error! - Role name must be unique!");
-				log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
-				return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-			case "UNIQUE_USER_USERNAME":
-				message.setMessage("Duplicate Error! - Username must be unique!");
-				log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
-				return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-			case "UNIQUE_USER_EMAIL":
-				message.setMessage("Duplicate Error! - Email address must be unique!");
 				log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
 				return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 			case "UNIQUE_USER_ROLE":
