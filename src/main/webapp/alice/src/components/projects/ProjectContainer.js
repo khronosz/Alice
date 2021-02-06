@@ -7,7 +7,6 @@ class ProjectContainer extends React.Component {
 
     state = {
         id: this.props.match.params.id,
-        content: "",
         currentUser: AuthService.getCurrentUser(),
         project: {},
         message: undefined,
@@ -36,7 +35,7 @@ class ProjectContainer extends React.Component {
 
     updateProject = (event) => {
         event.preventDefault()
-        ProjectService.update(this.state.project, (response, error) => {
+        ProjectService.update(this.state.project.id, this.state.project, (response, error) => {
             if (!error) {
                 this.setState({ message: "Project Updated Successfully!" });
                 this.resetProject()
@@ -75,7 +74,7 @@ class ProjectContainer extends React.Component {
         }
     }
 
-    toProjects = () => this.props.history.goBack()
+    toProjects = () => this.props.history.push("/projects")
 
     render() {
         return (

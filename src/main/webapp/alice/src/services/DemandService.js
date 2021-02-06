@@ -10,7 +10,7 @@ class DemandService extends Service {
 
 	save = (projectId, demand, callback) => this.post("/project/" + projectId + "/demand", demand, callback)
 
-	delete = (projectId, demandId, callback) => this.del("/project/" + projectId + "/demands/" + demandId, callback)
+	delete = (projectId, demandId, callback) => this.del("/project/" + projectId + "/demand/" + demandId, callback)
 
 	findAllByUser = (userId, callback) => this.get("/user/" + userId + "/demands", callback)
 

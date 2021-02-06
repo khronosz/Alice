@@ -6,7 +6,7 @@ import ExportService from '../../services/ExportService';
 class UtilPlanContainer extends React.Component {
 
     state = {
-        content: "",
+        error: "",
         users: [],
         currentPage: 1,
         usersPerPage: 10,
@@ -19,7 +19,7 @@ class UtilPlanContainer extends React.Component {
 
     findAllUsers = () => UserService.findUtilPlanUsers((response, error) => {
         if (response) this.setState({ users: response })
-        else this.setState({ content: error && error.message })
+        else this.setState({ error: error && error.message })
     })
 
     deleteUser = userId => {

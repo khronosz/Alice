@@ -7,7 +7,6 @@ class UserContainer extends React.Component {
 
     state = {
         id: this.props.match.params.id,
-        content: "",
         currentUser: AuthService.getCurrentUser(),
         user: {},
         directManagerNames: [],
@@ -23,12 +22,12 @@ class UserContainer extends React.Component {
 
     findAllUsers = () => UserService.findAllDirectManagerNames((response, error) => {
         if (response) this.setState({ directManagerNames: response });
-        else this.setState({ content: error.message })
+        else this.setState({ error: error.message })
     })
 
     findUser = (userId) => UserService.findById(userId, (response, error) => {
         if (!error) this.setState({ user: response })
-        else this.setState({ content: error.message })
+        else this.setState({ error: error.message })
     })
 
     findDirectManager = (managerId) => UserService.findById(managerId, (response, error) => {
@@ -38,7 +37,7 @@ class UserContainer extends React.Component {
                 directManagerName: response
             }
         }))
-        else this.setState({ content: error.message })
+        else this.setState({ error: error.message })
     })
 
     saveUser = event => {

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cronos.alice.exception.ExportFailedException;
 import cronos.alice.exception.IllegalDateException;
+import cronos.alice.exception.ResourceNotFoundException;
 import cronos.alice.exception.UniqueDemandNameException;
 import cronos.alice.exception.UniqueDemandsMibException;
 import cronos.alice.exception.UniqueDemandsUserProjectException;
@@ -38,12 +39,15 @@ public class DemandService {
 
 	private final List<Demand> demands;
 
+	private final List<Project> projects;
+
 	@Autowired
 	public DemandService(final DemandRepository demandRepository, final ProjectRepository projectRepository, final UserService userService) {
 		this.demandRepository = demandRepository;
 		this.projectRepository = projectRepository;
 		this.userService = userService;
 		this.demands = demandRepository.findAll();
+		this.projects = projectRepository.findAll();
 	}
 
 	public List<DemandDto> findAllByUserId(Long id) {
@@ -62,7 +66,7 @@ public class DemandService {
 
 	public void export(Long id, HttpServletResponse response) {
 		try {
-			Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found with the ID: " + id));
+			Project project = projectRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Project not found with the ID: " + id));
 			ByteArrayInputStream stream = new DemandExporter(findAllByProjectId(id), project.getProjectName()).export(response);
 			IOUtils.copy(stream, response.getOutputStream());
 			log.info("Export all demands to excel file by project ID: " + id);
@@ -95,14 +99,15 @@ public class DemandService {
 
 	public Demand convertToEntity(DemandDto dto) {
 		Demand demand = dto.getId() != null ? findById(dto.getId()) : new Demand();
-		updateDemandFields(dto, demand);
+//		updateDemandFields(dto, demand);
 		return demand;
 	}
 
-	private void updateDemandFields(final DemandDto dto, final Demand demand) {
+	public void updateDemandFields(final Long projectId, final DemandDto dto, final Demand demand) {
+		if (!isValidProjectId(projectId)) throw new ResourceNotFoundException("Project not found with the ID: " + projectId);
 		demand.setName(dto.getName());
 		demand.setMib(dto.getMib());
-		demand.setProjectId(dto.getProjectId());
+		demand.setProjectId(projectId);
 		if (dto.getUserId() == null) {
 			demand.setUserId(null);
 			demand.setProjectStart(null);
@@ -117,7 +122,7 @@ public class DemandService {
 	}
 
 	public DemandDto convertToDto(Demand demand) {
-		Project project = projectRepository.findById(demand.getProjectId()).orElseThrow(() -> new RuntimeException("Project not found with the ID: " + demand.getProjectId()));
+		Project project = projectRepository.findById(demand.getProjectId()).orElseThrow(() -> new ResourceNotFoundException("Project not found with the ID: " + demand.getProjectId()));
 		DemandDto dto = new DemandDto(demand);
 		dto.setUsername(demand.getUserId() != null ? userService.findById(demand.getUserId()).getUsername() : "");
 		dto.setProjectName(project.getProjectName());
@@ -126,12 +131,26 @@ public class DemandService {
 
 	public Demand findById(Long id) {
 		log.info("Find demand by ID: " + id);
-		return demandRepository.findById(id).orElseThrow(() -> new RuntimeException("Demand not found with the ID: " + id));
+		return demandRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Demand not found with the ID: " + id));
+	}
+
+	public Demand findByProject(Long projectId, Long id) {
+		log.info("Find demand by project ID: " + projectId + " and demand ID: " + id);
+		Demand demand = findById(id);
+		if (!demand.getProjectId().equals(projectId)) throw new ResourceNotFoundException("Resource not found!");
+		return demand;
 	}
 
 	@Transactional
-	public void deleteById(Long id) {
+	public void deleteById(Long projectId, Long id) {
+		int hint = (int) demands.stream().filter(d -> d.getProjectId().equals(projectId) && d.getId().equals(id)).count();
+		if (hint == 0) throw new ResourceNotFoundException("Demand not found with the ID: " + id);
 		log.warn("Delete demand by ID: " + id);
 		demandRepository.deleteById(id);
+	}
+
+	private Boolean isValidProjectId(Long projectId) {
+		int hint = (int) projects.stream().filter(p -> p.getId().equals(projectId)).count();
+		return hint != 0;
 	}
 }

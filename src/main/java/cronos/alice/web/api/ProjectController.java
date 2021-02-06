@@ -46,16 +46,6 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.findAllDtoBySearchText(searchText), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/projects/{id}")
-    public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") Long id) {
-        try {
-            projectService.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-        }
-    }
-
     @GetMapping(value = "/project/{id}")
     public ResponseEntity<ProjectDto> findById(@PathVariable("id") Long id) {
         Project project = projectService.findById(id);
@@ -71,22 +61,34 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.findAllIds(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/project", consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProjectDto> save(@RequestBody ProjectDto dto) {
-        Project project = projectService.convertToEntity(dto);
-        Project projectCreated = projectService.save(project);
-        return new ResponseEntity<>(projectService.convertToDto(projectCreated), HttpStatus.OK);
-    }
-
-    @PutMapping(value = "/project", consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProjectDto> update(@RequestBody ProjectDto dto) {
-        Project project = projectService.convertToEntity(dto);
-        Project projectCreated = projectService.save(project);
-        return new ResponseEntity<>(projectService.convertToDto(projectCreated), HttpStatus.OK);
-    }
-
     @GetMapping(value = "/projects/export")
     public void export(HttpServletResponse response) {
         projectService.export(response);
+    }
+
+    @PostMapping(value = "/project", consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProjectDto> save(@RequestBody ProjectDto dto) {
+        Project project = new Project();
+        projectService.updateProjectFields(dto, project);
+        Project projectCreated = projectService.save(project);
+        return new ResponseEntity<>(projectService.convertToDto(projectCreated), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/project/{id}", consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProjectDto> update(@RequestBody ProjectDto dto, @PathVariable Long id) {
+        Project project = projectService.findById(id);
+        projectService.updateProjectFields(dto, project);
+        Project projectCreated = projectService.save(project);
+        return new ResponseEntity<>(projectService.convertToDto(projectCreated), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/project/{id}")
+    public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id) {
+        try {
+            projectService.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cronos.alice.model.dto.TeamDto;
@@ -31,14 +30,8 @@ public class TeamController {
 	}
 
 	@GetMapping(value = "/team")
-	@ResponseBody
 	public ResponseEntity<List<TeamDto>> findAllTeamDto() {
 		return new ResponseEntity<>(userService.findAllTeamDto(userService.getLoggedInUser().getId()), HttpStatus.OK);
-	}
-
-	@PutMapping(value = "/team/{id}")
-	public ResponseEntity<TeamDto> updateLastValidation(@PathVariable("id") Long id) {
-		return new ResponseEntity<>(userService.updateLastValidation(id), HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/directManagers")
@@ -51,18 +44,23 @@ public class TeamController {
 		return new ResponseEntity<>(userService.findAllUsernames(), HttpStatus.OK);
 	}
 
-	@DeleteMapping(value = "/team/{id}")
-	public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") Long id) {
+	@GetMapping(value = "/team/export")
+	public void export(HttpServletResponse response) {
+		userService.exportTeam(response);
+	}
+
+	@PutMapping(value = "/team/{id}")
+	public ResponseEntity<TeamDto> updateLastValidation(@PathVariable Long id) {
+		return new ResponseEntity<>(userService.updateLastValidation(id), HttpStatus.OK);
+	}
+
+	@DeleteMapping(value = "/user/{id}")
+	public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id) {
 		try {
 			userService.deleteById(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
-	}
-
-	@GetMapping(value = "/team/export")
-	public void export(HttpServletResponse response) {
-		userService.exportTeam(response);
 	}
 }

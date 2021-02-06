@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.Tuple;
+import cronos.alice.exception.ResourceNotFoundException;
 import cronos.alice.exception.UniqueEmailAddressException;
 import cronos.alice.exception.ExportFailedException;
 import cronos.alice.exception.InvalidPasswordFormatException;
@@ -61,7 +62,7 @@ public class UserService {
 
 	public User findById(Long id) {
 		log.info("Find user by ID: " + id);
-		return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with the ID: " + id));
+		return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with the ID: " + id));
 	}
 
 	public List<String> findAllUsernames() {
@@ -149,8 +150,8 @@ public class UserService {
 	}
 
 	public void updateUserFields(final UserDto dto, final User user) {
-		User directManager = userRepository.findByUsername(dto.getDirectManagerName()).orElseThrow(() -> new RuntimeException("User not found with the name: " + dto.getDirectManagerName()));
-		log.debug("Convert dto to entity: " + dto.getUsername());
+		User directManager = userRepository.findByUsername(dto.getDirectManagerName()).orElseThrow(() -> new ResourceNotFoundException("User not found with the name: " + dto.getDirectManagerName()));
+		log.debug("Convert UserDto to entity: " + dto.getUsername());
 		user.setUsername(dto.getUsername());
 		user.setJob(dto.getJob());
 		user.setDepartment(dto.getDepartment());
@@ -164,7 +165,7 @@ public class UserService {
 	}
 
 	public UserDto convertToDto(User user) {
-		log.debug("Convert entity to dto: " + user.getUsername());
+		log.debug("Convert User entity to dto: " + user.getUsername());
 		UserDto dto = new UserDto(user);
 		dto.setDirectManagerName(findById(user.getDirectManagerId()).getUsername());
 		return dto;
@@ -199,7 +200,13 @@ public class UserService {
 
 	@Transactional
 	public void deleteById(Long userId) {
+		if (!isValidUserId(userId)) throw new ResourceNotFoundException("User not found with the ID: " + userId);
 		log.warn("Delete user by ID: " + userId);
 		userRepository.deleteById(userId);
+	}
+
+	private Boolean isValidUserId(Long userId) {
+		int hint = (int) users.stream().filter(u -> u.getId().equals(userId)).count();
+		return hint != 0;
 	}
 }

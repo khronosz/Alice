@@ -16,7 +16,7 @@ import Pagination from "../fragments/Pagination";
 export default function Team(props) {
 
     const {
-        content, users, currentPage, usersPerPage, getExport, chkLastValidation, editUser,
+        error, users, currentPage, usersPerPage, getExport, chkLastValidation, editUser,
         deleteUser, messageType, message, resetMessage, setPage,
     } = props.data
 
@@ -27,9 +27,9 @@ export default function Team(props) {
 
     return (
         <div>
-            <div style={{ "display": content ? "block" : "none" }}>
+            <div style={{ "display": error ? "block" : "none" }}>
                 <Jumbotron className="bg-dark text-white">
-                    <h3>{content}</h3>
+                    <h3>{error}</h3>
                 </Jumbotron>
             </div>
             <div>

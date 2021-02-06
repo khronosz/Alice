@@ -16,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import cronos.alice.exception.ResourceNotFoundException;
 import cronos.alice.exception.UniqueDemandNameException;
 import cronos.alice.exception.UniqueDemandsMibException;
 import cronos.alice.exception.UniqueDemandsUserProjectException;
@@ -26,6 +27,7 @@ import cronos.alice.exception.IllegalDateException;
 import cronos.alice.exception.InvalidPasswordFormatException;
 import cronos.alice.exception.PasswordDoesNotMatchException;
 import cronos.alice.exception.UniqueProjectsSapException;
+import cronos.alice.exception.UniqueRoleNameException;
 import cronos.alice.exception.UniqueUsernameException;
 import cronos.alice.exception.UtilizationTooMuchException;
 
@@ -60,6 +62,13 @@ public class ExceptionHandlerController {
 		ErrorMessage message = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), e.getMessage());
 		log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
 		return new ResponseEntity<>(message.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<ErrorMessage> resourceNotFoundExceptionHandler(ResourceNotFoundException e) {
+		ErrorMessage message = new ErrorMessage(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase(), e.getMessage());
+		log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
+		return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(IllegalDateException.class)
@@ -139,25 +148,26 @@ public class ExceptionHandlerController {
 		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(UniqueRoleNameException.class)
+	public ResponseEntity<ErrorMessage> uniqueRoleNameExceptionHandler(UniqueRoleNameException e) {
+		ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+		log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
+		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+	}
+
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<ErrorMessage> dataIntegrityViolationExceptionHandler(DataIntegrityViolationException e) {
 		ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase());
 		String msg = Objects.requireNonNull(e.getMessage()).substring(52);
 		msg = msg.substring(0, msg.indexOf("]"));
-		switch (msg) {
-			case "UNIQUE_ROLE_NAME":
-				message.setMessage("Duplicate Error! - Role name must be unique!");
-				log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
-				return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-			case "UNIQUE_USER_ROLE":
-				message.setMessage("Duplicate Error! - User already has this role!");
-				log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
-				return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-			default:
-				message.setMessage("Unknown SQL Data Integrity Violation Error!");
-				log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
-				return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+		if ("UNIQUE_USER_ROLE".equals(msg)) {
+			message.setMessage("Duplicate Error! - User already has this role!");
+			log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
+			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
+		message.setMessage("Unknown SQL Data Integrity Violation Error!");
+		log.error(message.getStatusCode() + ": " + message.getStatus() + " - " + message.getMessage());
+		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(ConstraintViolationException.class)

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cronos.alice.exception.ExportFailedException;
 import cronos.alice.exception.IllegalDateException;
+import cronos.alice.exception.ResourceNotFoundException;
 import cronos.alice.exception.UniqueProjectsSapException;
 import cronos.alice.model.dto.DemandDto;
 import cronos.alice.model.dto.ProjectDescriptionDto;
@@ -45,7 +46,7 @@ public class ProjectService {
 
 	public Project findById(Long id) {
 		log.info("Find project by ID: " + id);
-		return projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found with the ID: " + id));
+		return projectRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Project not found with the ID: " + id));
 	}
 
 	public List<ProjectDto> findAll() {
@@ -102,13 +103,8 @@ public class ProjectService {
 		return projectRepository.save(project);
 	}
 
-	public Project convertToEntity(ProjectDto dto) {
-		Project project = dto.getId() != null ? findById(dto.getId()) : new Project();
-		updateProjectFields(dto, project);
-		return project;
-	}
-
-	private void updateProjectFields(final ProjectDto dto, final Project project) {
+	public void updateProjectFields(final ProjectDto dto, final Project project) {
+		log.debug("Convert ProjectDto to entity: " + dto.getProjectName());
 		project.setProjectName(dto.getProjectName());
 		project.setSap(dto.getSap());
 		project.setPhase(dto.getPhase());
@@ -130,12 +126,19 @@ public class ProjectService {
 	}
 
 	public ProjectDto convertToDto(Project project) {
+		log.debug("Convert Project entity to dto: " + project.getProjectName());
 		return new ProjectDto(project);
 	}
 
 	@Transactional
 	public void deleteById(Long projectId) {
+		if (!isValidProjectId(projectId)) throw new ResourceNotFoundException("Project not found with the ID: " + projectId);
 		log.warn("Delete project by ID: " + projectId);
 		projectRepository.deleteById(projectId);
+	}
+
+	private Boolean isValidProjectId(Long projectId) {
+		int hint = (int) projects.stream().filter(p -> p.getId().equals(projectId)).count();
+		return hint != 0;
 	}
 }

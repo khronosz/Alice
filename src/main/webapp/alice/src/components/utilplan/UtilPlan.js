@@ -5,12 +5,11 @@ import {faEdit, faTrash, faUsers} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import {ExportButton} from "../tools/ExportButton";
 import Pagination from "../fragments/Pagination";
-import {Link} from "react-router-dom";
 
 export default function UtilPlan(props) {
 
     const {
-        content, users = [], currentPage, usersPerPage, getExport, editUser, deleteUser,
+        error, users = [], currentPage, usersPerPage, getExport, editUser, deleteUser,
         message, resetMessage, setPage
     } = props.data
 
@@ -21,9 +20,9 @@ export default function UtilPlan(props) {
 
     return (
         <div>
-            <div style={{"display": content ? "block" : "none"}}>
+            <div style={{"display": error ? "block" : "none"}}>
                 <Jumbotron className="bg-dark text-white">
-                    <h3>{content}</h3>
+                    <h3>{error}</h3>
                 </Jumbotron>
             </div>
             <div>

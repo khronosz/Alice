@@ -12,7 +12,7 @@ class UserService extends Service {
 
     save = (user, callback) => this.post("/user", user, callback)
 
-    delete = (id, callback) => this.del("/team/" + id, callback)
+    delete = (id, callback) => this.del("/user/" + id, callback)
 
     findUtilPlanUsers = (callback) => this.get("/utilization", callback)
 

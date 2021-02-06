@@ -9,11 +9,11 @@ class ProjectService extends Service {
 
     findById = (id, callback) => this.get("/project/" + id, callback)
 
-    update = (project, callback) => this.put("/project", project, callback)
+    update = (id, project, callback) => this.put("/project/" + id, project, callback)
 
     save = (project, callback) => this.post("/project", project, callback)
 
-    delete = (id, callback) => this.del("/projects/" + id, callback)
+    delete = (id, callback) => this.del("/project/" + id, callback)
 
     findAllId = (callback) => this.get("/projects/ids", callback)
 }

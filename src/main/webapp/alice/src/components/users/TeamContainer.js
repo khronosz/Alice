@@ -6,7 +6,7 @@ import ExportService from '../../services/ExportService';
 class TeamContainer extends React.Component {
 
     state = {
-        content: "",
+        error: "",
         users: [],
         currentPage: 1,
         usersPerPage: 10,
@@ -20,7 +20,7 @@ class TeamContainer extends React.Component {
 
     findAllUsers = () => UserService.findAll((response, error) => {
         if (!error) this.setState({ users: response })
-        else this.setState({ content: error.message })
+        else this.setState({ error: error.message })
     })
 
     chkLastValidation = userId => {

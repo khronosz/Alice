@@ -3,7 +3,7 @@ INSERT INTO roles (`name`) VALUES ('ROLE_MODERATOR');
 INSERT INTO roles (`name`) VALUES ('ROLE_ADMIN');
 
 INSERT INTO `users` (`id`, `username`, `job`, `department`, `email`, `passwd`, `city`, `user_level`, `note`, `direct_manager`, `last_validation`) VALUES
-	(1, 'admin', 'System Administrator', 'IT', 'admin@admin.com', '$2y$12$nL3g7WgEOlciPUOH99Ml7.m.FIAtIbRjN/WLDyr05MZTX2XnpKbgK', 'Pécs', 'Architect', 'notes', NULL, NULL),
+	(1, 'admin', 'System Administrator', 'IT', 'admin@admin.com', '$2y$12$nL3g7WgEOlciPUOH99Ml7.m.FIAtIbRjN/WLDyr05MZTX2XnpKbgK', 'Pécs', 'Architect', 'notes', 1, NULL),
 	(2, 'arpad', 'ProjectContainer Manager', 'IT', 'arpad@gmail.com', '$2y$12$kgAcVYHNMj8wtcU4vsdtQOTqhU9g9YCfGFez0gp03noGgQ24N9c/2', 'Budapest', 'Senior', 'notes2', 1, NULL),
 	(3, 'megyer', 'Developer', 'IT', 'megyer@4shared.com', '$2y$12$jw4Fy2qsgvmPOBW8R6zOP.XSACM3X8EmU0tvzNK7WpAIvwWy1w7AO', 'Pécs', 'Junior', 'notes3', 1, NULL),
 	(4, 'almos', 'Geological Engineer', 'Accounting', 'ospain3@4shared.com', '$2y$12$he4Kf48ITrSdF3mp8s.U.Otc63PDQLQhmBKQP74.u37OOjoHpRshS', 'Arbuzynka', 'Senior', 'Zillow', 2, NULL),

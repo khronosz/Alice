@@ -104,18 +104,18 @@ public class ProjectServiceTest {
 		assertEquals(project2.getCustomer(), dtoList.get(1).getCustomer());
 	}
 
-	@Test
-	public void testConvertToEntity() {
-		ProjectDto dto = new ProjectDto(project);
-		Project projectConverted = projectService.convertToEntity(dto);
-
-		assertEquals(projectConverted.getId(), project.getId());
-		assertEquals(projectConverted.getId(), dto.getId());
-		assertEquals(projectConverted.getProjectName(), project.getProjectName());
-		assertEquals(projectConverted.getProjectName(), dto.getProjectName());
-		assertEquals(projectConverted.getSap(), project.getSap());
-		assertEquals(projectConverted.getSap(), dto.getSap());
-	}
+//	@Test
+//	public void testConvertToEntity() {
+//		ProjectDto dto = new ProjectDto(project);
+//		Project projectConverted = projectService.convertToEntity(dto);
+//
+//		assertEquals(projectConverted.getId(), project.getId());
+//		assertEquals(projectConverted.getId(), dto.getId());
+//		assertEquals(projectConverted.getProjectName(), project.getProjectName());
+//		assertEquals(projectConverted.getProjectName(), dto.getProjectName());
+//		assertEquals(projectConverted.getSap(), project.getSap());
+//		assertEquals(projectConverted.getSap(), dto.getSap());
+//	}
 
 
 	@Test

@@ -10,7 +10,7 @@ class Footer extends React.Component {
             <Navbar fixed="bottom" bg="dark" variant="dark">
                 <Container>
                     <Col lg={12} className="text-center text-muted">
-                        <div>{fullYear}, All Rights Reserved by Deutsche Telekom Systems Solutions Hungary Kft.</div>
+                        <div>{fullYear}, All Rights Reserved by Cronos</div>
                     </Col>
                 </Container>
             </Navbar>
