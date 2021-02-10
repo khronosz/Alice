@@ -12,6 +12,8 @@ public interface CustomizedDemandRepository {
 
 	Integer getTotalUtilizationByUser(Long userId, Long demandId);
 
+	Integer getTotalUtilizationByUser(Long userId);
+
 	List<Tuple> findAllDto();
 
 	Tuple findDtoById(Long id);

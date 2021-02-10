@@ -8,7 +8,7 @@ import "../TypeAhead.css"
 
 export default function Demand(props) {
 
-    const { resetDemand, demand, demandChange, utilizationChange, saveDemand, currentUser, message, error, team, toDemands, resetMessage, userChange } = props.data
+    const { resetDemand, project, demand, demandChange, utilizationChange, saveDemand, updateDemand, currentUser, message, error, team, toDemands, resetMessage, userChange } = props.data
 
     return (
         <div className={"container"} style={{ width: "50%", maxWidth: "50%" }}>
@@ -17,9 +17,9 @@ export default function Demand(props) {
                 <Card className={"border border-dark bg-dark text-white"}>
                     <Card.Header>
                         <FontAwesomeIcon icon={demand.id ? faEdit : faGavel} />
-                        {demand.id ? " Update Demand of " : " Add Demand to "}{demand.projectName}
+                        {demand.id ? " Update Demand of " : " Add Demand to "}{project.projectName}
                     </Card.Header>
-                    <Form id="demandFormId" onSubmit={saveDemand} onReset={resetDemand}>
+                    <Form id="demandFormId" onSubmit={demand.id ? updateDemand : saveDemand} onReset={resetDemand}>
                         <Card.Body>
                             <Form.Row>
                                 <TextField name="name" variable={demand.name} change={demandChange} />
@@ -27,7 +27,7 @@ export default function Demand(props) {
                             </Form.Row>
                             <Form.Row>
                                 <FilterList name="user" options={team} field="username" change={userChange} selected={demand.username} />
-                                <TextField name="utilization" variable={demand.utilization} change={utilizationChange} req={false} />
+                                <TextField name="utilization" variable={demand.utilization} change={utilizationChange} req={demand.username !== null && demand.username !== undefined} />
                             </Form.Row>
                             <Form.Row>
                                 <DatePicker name="projectStart" variable={demand.projectStart || ""} change={demandChange} req={demand.username !== null && demand.username !== undefined} />

@@ -6,7 +6,7 @@ class DemandService extends Service {
 
 	findById = (projectId, demandId, callback) => this.get("/project/" + projectId + "/demand/" + demandId, callback)
 
-	update = (projectId, demand, callback) => this.put("/project" + projectId + "/demand", demand, callback)
+	update = (projectId, id, demand, callback) => this.put("/project/" + projectId + "/demand/" + id, demand, callback)
 
 	save = (projectId, demand, callback) => this.post("/project/" + projectId + "/demand", demand, callback)
 

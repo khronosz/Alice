@@ -32,13 +32,21 @@ public class CustomizedDemandRepositoryImpl implements CustomizedDemandRepositor
 				.fetch();
 	}
 
-	//todo: demandId != demand.id
 	@Override
 	public Integer getTotalUtilizationByUser(final Long userId, final Long demandId) {
 		return new JPAQuery<>(entityManager)
 				.select(demand.utilization.sum())
 				.from(demand)
-				.where(demand.userId.eq(userId).and(demand.id.isNull()))
+				.where(demand.userId.eq(userId).and(demand.id.ne(demandId)))
+				.fetchFirst();
+	}
+
+	@Override
+	public Integer getTotalUtilizationByUser(final Long userId) {
+		return new JPAQuery<>(entityManager)
+				.select(demand.utilization.sum())
+				.from(demand)
+				.where(demand.userId.eq(userId))
 				.fetchFirst();
 	}
 

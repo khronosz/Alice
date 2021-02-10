@@ -22,6 +22,7 @@ import cronos.alice.exception.UtilizationTooMuchException;
 import cronos.alice.model.dto.DemandDto;
 import cronos.alice.model.entity.Demand;
 import cronos.alice.model.entity.Project;
+import cronos.alice.model.entity.User;
 import cronos.alice.repository.DemandRepository;
 import cronos.alice.repository.ProjectRepository;
 import cronos.alice.util.DemandExporter;
@@ -37,7 +38,7 @@ public class DemandService {
 
 	private final UserService userService;
 
-	private final List<Demand> demands;
+	private List<Demand> demands;
 
 	private final List<Project> projects;
 
@@ -46,7 +47,6 @@ public class DemandService {
 		this.demandRepository = demandRepository;
 		this.projectRepository = projectRepository;
 		this.userService = userService;
-		this.demands = demandRepository.findAll();
 		this.projects = projectRepository.findAll();
 	}
 
@@ -78,29 +78,31 @@ public class DemandService {
 
 	@Transactional
 	public Demand save(Demand demand) {
+		demands = demandRepository.findAll();
 		demands.forEach(d -> {
 			if (d.getName().equalsIgnoreCase(demand.getName()) && !d.getId().equals(demand.getId())) throw new UniqueDemandNameException("Demand name already exists!");
 			if (d.getMib().equalsIgnoreCase(demand.getMib()) && !d.getId().equals(demand.getId())) throw new UniqueDemandsMibException("Demands MIB already exists!");
-			if (d.getUserId().equals(demand.getUserId()) && d.getProjectId().equals(demand.getProjectId()) && !d.getId().equals(demand.getId())) throw new UniqueDemandsUserProjectException("User already exists on the project!");
+			if (demand.getUserId() != null && d.getUserId() != null && d.getUserId().equals(demand.getUserId()) && d.getProjectId().equals(demand.getProjectId())	&& !d.getId().equals(demand.getId())) throw new UniqueDemandsUserProjectException("User already exists on the project!");
 		});
 		if (demand.getProjectStart() != null && demand.getProjectEnd() != null && demand.getProjectEnd().isBefore(demand.getProjectStart())) {
 			throw new IllegalDateException("End date cannot be earlier than start date!");
 		}
-		if (demand.getUserId() != null) {
-			Integer totalUtilization = demandRepository.getTotalUtilizationByUser(demand.getUserId(), demand.getId());
-			if (totalUtilization == null) totalUtilization = demand.getUtilization();
-			if (totalUtilization > 100) {
-				throw new UtilizationTooMuchException("Utilization cannot be more than 100!");
+		if (demand.getUserId() != null && demand.getId() != null) {
+			Integer currentUtilization = demandRepository.getTotalUtilizationByUser(demand.getUserId(), demand.getId());
+			currentUtilization += demand.getUtilization();
+			if (currentUtilization > 100) {
+				throw new UtilizationTooMuchException("Total utilization of the employee cannot be more than 100!");
+			}
+		}
+		if (demand.getUserId() != null && demand.getId() == null) {
+			Integer currentUtilization = demandRepository.getTotalUtilizationByUser(demand.getUserId());
+			currentUtilization += demand.getUtilization();
+			if (currentUtilization > 100) {
+				throw new UtilizationTooMuchException("Total utilization of the employee cannot be more than 100!");
 			}
 		}
 		log.info("Save demand: " + demand.getName());
 		return demandRepository.save(demand);
-	}
-
-	public Demand convertToEntity(DemandDto dto) {
-		Demand demand = dto.getId() != null ? findById(dto.getId()) : new Demand();
-//		updateDemandFields(dto, demand);
-		return demand;
 	}
 
 	public void updateDemandFields(final Long projectId, final DemandDto dto, final Demand demand) {
@@ -108,16 +110,17 @@ public class DemandService {
 		demand.setName(dto.getName());
 		demand.setMib(dto.getMib());
 		demand.setProjectId(projectId);
-		if (dto.getUserId() == null) {
+		if (dto.getUsername() != null) {
+			User user = userService.findByUsername(dto.getUsername());
+			demand.setUserId(user.getId());
+			demand.setProjectStart(dto.getProjectStart());
+			demand.setProjectEnd(dto.getProjectEnd());
+			demand.setUtilization(dto.getUtilization() != null ? dto.getUtilization() : 0);
+		} else {
 			demand.setUserId(null);
 			demand.setProjectStart(null);
 			demand.setProjectEnd(null);
 			demand.setUtilization(0);
-		} else {
-			demand.setUserId(dto.getUserId());
-			demand.setProjectStart(dto.getProjectStart());
-			demand.setProjectEnd(dto.getProjectEnd());
-			demand.setUtilization(dto.getUtilization());
 		}
 	}
 
@@ -143,6 +146,7 @@ public class DemandService {
 
 	@Transactional
 	public void deleteById(Long projectId, Long id) {
+		demands = demandRepository.findAll();
 		int hint = (int) demands.stream().filter(d -> d.getProjectId().equals(projectId) && d.getId().equals(id)).count();
 		if (hint == 0) throw new ResourceNotFoundException("Demand not found with the ID: " + id);
 		log.warn("Delete demand by ID: " + id);

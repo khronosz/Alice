@@ -57,12 +57,17 @@ public class UserService {
 	public User getLoggedInUser() {
 		String username = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 		log.info("Get logged in user: " + username);
-		return userRepository.findByUsername(username).orElse(null);
+		return findByUsername(username);
 	}
 
 	public User findById(Long id) {
 		log.info("Find user by ID: " + id);
 		return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with the ID: " + id));
+	}
+
+	public User findByUsername(String username) {
+		log.info("Find user by username: " + username);
+		return userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with the username: " + username));
 	}
 
 	public List<String> findAllUsernames() {
@@ -150,7 +155,7 @@ public class UserService {
 	}
 
 	public void updateUserFields(final UserDto dto, final User user) {
-		User directManager = userRepository.findByUsername(dto.getDirectManagerName()).orElseThrow(() -> new ResourceNotFoundException("User not found with the name: " + dto.getDirectManagerName()));
+		User directManager = findByUsername(dto.getDirectManagerName());
 		log.debug("Convert UserDto to entity: " + dto.getUsername());
 		user.setUsername(dto.getUsername());
 		user.setJob(dto.getJob());

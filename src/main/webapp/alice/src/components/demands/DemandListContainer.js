@@ -36,7 +36,7 @@ export default class DemandListContainer extends React.Component {
     nextBtn = () => {
         this.findParentProject(this.state.projectIds[this.state.idx +1])
         DemandService.findAll(this.state.projectIds[this.state.idx + 1], (response, error) => {
-            if (response) this.setState({ demands: response })
+            if (response) this.setState({ demands: response, projectId:  this.state.projectIds[this.state.idx]})
             else this.toProjects()
         })
         this.initIndex(this.state.projectIds[this.state.idx + 1])
@@ -45,7 +45,7 @@ export default class DemandListContainer extends React.Component {
     prevBtn = () => {
         this.findParentProject(this.state.projectIds[this.state.idx -1])
         DemandService.findAll(this.state.projectIds[this.state.idx - 1], (response, error) => {
-            if (response) this.setState({ demands: response })
+            if (response) this.setState({ demands: response, projectId: this.state.projectIds[this.state.idx] })
             else this.toProjects()
         })
         this.initIndex(this.state.projectIds[this.state.idx - 1])
@@ -71,6 +71,7 @@ export default class DemandListContainer extends React.Component {
     })
 
     deleteDemand = demandId => DemandService.delete(this.state.projectId, demandId, (response, error) => {
+        console.log('projectId: ' + this.state.projectId)
         if (!error) {
             this.setState({ message: "Demand Deleted Successfully!" });
             this.setState({ demands: this.state.demands.filter(demand => demand.id !== demandId) });

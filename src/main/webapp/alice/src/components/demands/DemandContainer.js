@@ -9,45 +9,46 @@ export default class DemandContainer extends React.Component {
 
     state = {
         showMessage: false,
-        content: "",
         currentUser: AuthService.getCurrentUser(),
-        parentProjectId: this.props.match.params.id,
-        team: [],
+        projectId: this.props.match.params.id,
+        demandId: this.props.match.params.did,
+        project: {},
         demand: {},
+        team: [],
         message: undefined,
         error: undefined
     }
 
     componentDidMount() {
-        const demandId = this.props.match.params.did
-        if (demandId) this.findDemand(demandId)
+        this.findProject()
+        if (this.state.demandId) this.findDemand()
         this.findAllUsers()
-        this.findParentProject(this.state.parentProjectId)
     }
 
-    findParentProject = (id) => ProjectService.findById(id, (response, error) => {
-        if (!error) this.setState(prevState => ({
-            demand: {
-                ...prevState.demand,
-                project: response
-            }
-        }))
-        else this.toProjects()
+    findProject = () => ProjectService.findById(this.state.projectId, (response, error) => {
+        if (!error) this.setState({ project: response });
+        else {
+            this.setState({ error: error && error.message })
+            this.toDemands()
+        }
     })
 
-    findDemand = demandId => DemandService.findById(this.state.parentProjectId, demandId, (response, error) => {
+    findDemand = () => DemandService.findById(this.state.projectId, this.state.demandId, (response, error) => {
         if (!error) this.setState({ demand: response });
-        else this.toDemands()
+        else {
+            this.setState({ error: error && error.message })
+            this.toDemands()
+        }
     })
 
     findAllUsers = () => UserService.findAllUsers((response, error) => {
         if (response) this.setState({ team: response })
-        else this.setState({ content: error && error.message })
+        else this.setState({ error: error && error.message })
     })
 
     saveDemand = event => {
         event.preventDefault();
-        DemandService.save(this.state.parentProjectId, this.state.demand, (response, error) => {
+        DemandService.save(this.state.projectId, this.state.demand, (response, error) => {
             if (!error) {
                 this.setState({ message: "Demand Saved Successfully!" });
                 this.resetDemand()
@@ -58,14 +59,13 @@ export default class DemandContainer extends React.Component {
 
     updateDemand = event => {
         event.preventDefault();
-        DemandService.update(this.state.parentProjectId, this.state.demand, (response, error) => {
+        DemandService.update(this.state.projectId, this.state.demand.id, this.state.demand, (response, error) => {
             if (!error) {
                 this.setState({ message: "Demand Updated Successfully!" });
                 this.resetDemand()
                 setTimeout(() => this.toDemands(), 500);
             } else this.setState({ error: error })
         });
-
     }
 
     resetDemand = () => {
@@ -106,14 +106,12 @@ export default class DemandContainer extends React.Component {
         this.setState(prevState => ({
             demand: {
                 ...prevState.demand,
-                user: selected
+                username: selected
             }
         }))
     }
 
     toDemands = () => this.props.history.push("/project/" + this.props.match.params.id + "/demands");
-
-    toProjects = () => this.props.history.push("/projects")
 
     resetMessage = () => this.setState({ message: undefined })
 
@@ -125,7 +123,6 @@ export default class DemandContainer extends React.Component {
                 saveDemand: this.saveDemand,
                 updateDemand: this.updateDemand,
                 demandChange: this.demandChange,
-                projectChange: this.projectChange,
                 utilizationChange: this.utilizationChange,
                 toDemands: this.toDemands,
                 resetMessage: this.resetMessage,

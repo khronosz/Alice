@@ -53,7 +53,6 @@ public class DemandController {
 		demandService.export(id, response);
 	}
 
-	//todo
 	@PostMapping(value = "/project/{projectId}/demand", consumes = APPLICATION_JSON_VALUE)
 	public ResponseEntity<DemandDto> save(@RequestBody DemandDto dto, @PathVariable Long projectId) {
 		Demand demand = new Demand();
@@ -62,18 +61,19 @@ public class DemandController {
 		return new ResponseEntity<>(demandService.convertToDto(demandCreated), HttpStatus.OK);
 	}
 
-	//todo
-	@PutMapping(value = "/project/{projectId}/demand", consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<DemandDto> update(@RequestBody DemandDto dto, @PathVariable Long projectId) {
-		Demand demand = demandService.convertToEntity(dto);
+	@PutMapping(value = "/project/{projectId}/demand/{id}", consumes = APPLICATION_JSON_VALUE)
+	public ResponseEntity<DemandDto> update(@RequestBody DemandDto dto, @PathVariable Long projectId, @PathVariable Long id) {
+		Demand demand = demandService.findById(id);
+		demandService.updateDemandFields(projectId, dto, demand);
 		Demand demandCreated = demandService.save(demand);
 		return new ResponseEntity<>(demandService.convertToDto(demandCreated), HttpStatus.OK);
 	}
 
 	//todo
-	@PutMapping(value = "/user/{id}/demands", consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<DemandDto> updateDemand(@RequestBody DemandDto dto, @PathVariable Long id) {
-		Demand demand = demandService.convertToEntity(dto);
+	@PutMapping(value = "/user/{userId}/demand/{id}", consumes = APPLICATION_JSON_VALUE)
+	public ResponseEntity<DemandDto> updateDemand(@RequestBody DemandDto dto, @PathVariable Long userId, @PathVariable Long id) {
+		Demand demand = demandService.findById(id);
+		demandService.updateDemandFields(dto.getProjectId(), dto, demand);
 		Demand demandCreated = demandService.save(demand);
 		return new ResponseEntity<>(demandService.convertToDto(demandCreated), HttpStatus.OK);
 	}
