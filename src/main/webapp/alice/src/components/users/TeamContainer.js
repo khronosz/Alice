@@ -37,7 +37,7 @@ class TeamContainer extends React.Component {
             if (!error) {
                 this.setState({ message: "User Deleted Successfully!", messageType: "danger" });
                 this.setState({ users: this.state.users.filter(user => user.id !== userId) });
-            } else console.log(error)
+            }
         })
     }
 

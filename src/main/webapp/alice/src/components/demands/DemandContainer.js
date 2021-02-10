@@ -28,7 +28,7 @@ export default class DemandContainer extends React.Component {
     findProject = () => ProjectService.findById(this.state.projectId, (response, error) => {
         if (!error) this.setState({ project: response });
         else {
-            this.setState({ error: error && error.message })
+            this.setState({ error: error })
             this.toDemands()
         }
     })
@@ -36,14 +36,14 @@ export default class DemandContainer extends React.Component {
     findDemand = () => DemandService.findById(this.state.projectId, this.state.demandId, (response, error) => {
         if (!error) this.setState({ demand: response });
         else {
-            this.setState({ error: error && error.message })
+            this.setState({ error: error })
             this.toDemands()
         }
     })
 
     findAllUsers = () => UserService.findAllUsers((response, error) => {
         if (response) this.setState({ team: response })
-        else this.setState({ error: error && error.message })
+        else this.setState({ error: error })
     })
 
     saveDemand = event => {

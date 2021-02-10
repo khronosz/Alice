@@ -71,7 +71,6 @@ export default class DemandListContainer extends React.Component {
     })
 
     deleteDemand = demandId => DemandService.delete(this.state.projectId, demandId, (response, error) => {
-        console.log('projectId: ' + this.state.projectId)
         if (!error) {
             this.setState({ message: "Demand Deleted Successfully!" });
             this.setState({ demands: this.state.demands.filter(demand => demand.id !== demandId) });

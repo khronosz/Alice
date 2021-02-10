@@ -17,20 +17,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.Tuple;
-import cronos.alice.exception.ResourceNotFoundException;
-import cronos.alice.exception.UniqueEmailAddressException;
 import cronos.alice.exception.ExportFailedException;
 import cronos.alice.exception.InvalidPasswordFormatException;
 import cronos.alice.exception.PasswordDoesNotMatchException;
+import cronos.alice.exception.ResourceNotFoundException;
+import cronos.alice.exception.UniqueEmailAddressException;
 import cronos.alice.exception.UniqueUsernameException;
 import cronos.alice.model.UserDetailsImpl;
+import cronos.alice.model.dto.DemandDto;
 import cronos.alice.model.dto.NonUtilizedUserDto;
 import cronos.alice.model.dto.NonValidatedUserDto;
 import cronos.alice.model.dto.PasswordDto;
 import cronos.alice.model.dto.TeamDto;
 import cronos.alice.model.dto.UserDto;
 import cronos.alice.model.dto.UtilPlanDto;
+import cronos.alice.model.entity.Demand;
 import cronos.alice.model.entity.User;
+import cronos.alice.repository.DemandRepository;
 import cronos.alice.repository.UserRepository;
 import cronos.alice.util.PasswordValidator;
 import cronos.alice.util.TeamExporter;
@@ -45,13 +48,15 @@ public class UserService {
 
 	private final PasswordEncoder passwordEncoder;
 
-	private final List<User> users;
+	private final DemandRepository demandRepository;
+
+	private List<User> users;
 
 	@Autowired
-	public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder) {
+	public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final DemandRepository demandRepository) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
-		this.users = userRepository.findAll();
+		this.demandRepository = demandRepository;
 	}
 
 	public User getLoggedInUser() {
@@ -147,6 +152,7 @@ public class UserService {
 	@Transactional
 	public User save(User user) {
 		log.info("Save user: " + user.getUsername());
+		users = userRepository.findAll();
 		users.forEach(u -> {
 			if (u.getUsername().equalsIgnoreCase(user.getUsername()) && !u.getId().equals(user.getId())) throw new UniqueUsernameException("Username already exists!");
 			if (u.getEmail().equalsIgnoreCase(user.getEmail()) && !u.getId().equals(user.getId())) throw new UniqueEmailAddressException("Email already exists!");
@@ -206,11 +212,21 @@ public class UserService {
 	@Transactional
 	public void deleteById(Long userId) {
 		if (!isValidUserId(userId)) throw new ResourceNotFoundException("User not found with the ID: " + userId);
+		List<DemandDto> dtoList = demandRepository.findAllDtoByUserId(userId).stream().map(DemandDto::new).collect(Collectors.toList());
+		if (!dtoList.isEmpty()) {
+			dtoList.stream().map(dto -> demandRepository.findById(dto.getId()).orElseThrow(() -> new ResourceNotFoundException("Demand not found with the ID: " + dto.getId()))).forEach(demand -> {
+				demand.setProjectStart(null);
+				demand.setProjectEnd(null);
+				demand.setUtilization(0);
+				demandRepository.save(demand);
+			});
+		}
 		log.warn("Delete user by ID: " + userId);
 		userRepository.deleteById(userId);
 	}
 
 	private Boolean isValidUserId(Long userId) {
+		users = userRepository.findAll();
 		int hint = (int) users.stream().filter(u -> u.getId().equals(userId)).count();
 		return hint != 0;
 	}

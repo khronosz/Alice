@@ -88,14 +88,14 @@ public class DemandService {
 			throw new IllegalDateException("End date cannot be earlier than start date!");
 		}
 		if (demand.getUserId() != null && demand.getId() != null) {
-			Integer currentUtilization = demandRepository.getTotalUtilizationByUser(demand.getUserId(), demand.getId());
+			Integer currentUtilization = demandRepository.getTotalUtilizationByUser(demand.getUserId(), demand.getId()) != null ? demandRepository.getTotalUtilizationByUser(demand.getUserId(), demand.getId()) : 0;
 			currentUtilization += demand.getUtilization();
 			if (currentUtilization > 100) {
 				throw new UtilizationTooMuchException("Total utilization of the employee cannot be more than 100!");
 			}
 		}
 		if (demand.getUserId() != null && demand.getId() == null) {
-			Integer currentUtilization = demandRepository.getTotalUtilizationByUser(demand.getUserId());
+			Integer currentUtilization = demandRepository.getTotalUtilizationByUser(demand.getUserId()) != null ? demandRepository.getTotalUtilizationByUser(demand.getUserId()) : 0;
 			currentUtilization += demand.getUtilization();
 			if (currentUtilization > 100) {
 				throw new UtilizationTooMuchException("Total utilization of the employee cannot be more than 100!");

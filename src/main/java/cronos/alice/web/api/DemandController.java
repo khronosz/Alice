@@ -69,15 +69,6 @@ public class DemandController {
 		return new ResponseEntity<>(demandService.convertToDto(demandCreated), HttpStatus.OK);
 	}
 
-	//todo
-	@PutMapping(value = "/user/{userId}/demand/{id}", consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<DemandDto> updateDemand(@RequestBody DemandDto dto, @PathVariable Long userId, @PathVariable Long id) {
-		Demand demand = demandService.findById(id);
-		demandService.updateDemandFields(dto.getProjectId(), dto, demand);
-		Demand demandCreated = demandService.save(demand);
-		return new ResponseEntity<>(demandService.convertToDto(demandCreated), HttpStatus.OK);
-	}
-
 	@DeleteMapping(value = "/project/{projectId}/demand/{id}")
 	public ResponseEntity<HttpStatus> deleteById(@PathVariable Long projectId, @PathVariable Long id) {
 		try {

@@ -24,6 +24,8 @@ class UserDemandsContainer extends React.Component {
         UserService.findById(id, (response, error) => {
             if (response) {
                 this.setState({user: response})
+            } else {
+                this.setState({ error: error })
             }
         })
     }
@@ -32,6 +34,8 @@ class UserDemandsContainer extends React.Component {
         DemandService.findAllByUser(this.state.userId, (response, error) => {
             if (response) {
                 this.setState({demands: response})
+            } else {
+                this.setState({ error: error })
             }
         })
     }
@@ -45,11 +49,11 @@ class UserDemandsContainer extends React.Component {
            if (row.projectName === rowId) {
                const demand = { ...row };
                demand[dataField] = newValue;
-               DemandService.updateFromUser(this.state.userId, demand, (response, error) => {
+               DemandService.update(demand.projectId, demand.id, demand, (response, error) => {
                    if (!error) {
                        this.setState({ error: undefined, message: "Demand Updated Successfully!", messageType: "success" });
                    } else {
-                       this.setState({ error: error})
+                       this.setState({ error: error })
                    }
                })
                return demand;

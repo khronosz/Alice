@@ -14,7 +14,7 @@ class DemandService extends Service {
 
 	findAllByUser = (userId, callback) => this.get("/user/" + userId + "/demands", callback)
 
-	updateFromUser = (userId, demand, callback) => this.put("/user/" + userId + "/demands", demand, callback)
+	// updateFromUser = (userId, demandId, demand, callback) => this.put("/user/" + userId + "/demand/" + demandId, demand, callback)
 }
 
 export default new DemandService();
