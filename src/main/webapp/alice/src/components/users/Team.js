@@ -1,17 +1,12 @@
 import { Button, ButtonGroup, Card, Jumbotron, Table } from "react-bootstrap";
 import MyToast from "../MyToast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faEdit,
-    faPlus,
-    faTrash,
-    faUsers,
-    faCheck
-} from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPlus, faTrash, faUsers, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 import { ExportButton } from "../tools/ExportButton";
 import Pagination from "../fragments/Pagination";
+import { ConfirmAlert } from "../fragments/ConfirmAlert";
 
 export default function Team(props) {
 
@@ -25,6 +20,14 @@ export default function Team(props) {
     const currentUsers = users.slice(firstIndex, lastIndex);
     const totalPages = users.length !== 0 ? Math.ceil(users.length / usersPerPage) : 1;
 
+    const [show, setShow] = useState(false);
+    let deletedId = null;
+
+    const openConfirmAlert = (userId) => {
+        deletedId = userId;
+        setShow(prev => !prev);
+    };
+
     return (
         <div>
             <div style={{ "display": error ? "block" : "none" }}>
@@ -35,12 +38,10 @@ export default function Team(props) {
             <div>
                 <MyToast clear={true} message={message} type={messageType} reset={() => resetMessage()} />
                 <div>
+                    <ConfirmAlert show={show} setShow={setShow} target={deletedId} action={deleteUser(deletedId)}/>
                     <Card className={"border border-dark bg-dark text-white"}>
                         <Card.Header>
                             <FontAwesomeIcon icon={faUsers} />{' '}{currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}'s Team
-                            <Button variant="primary"  >
-                                Confirm Dialog
-                            </Button>
                             <ExportButton action={getExport} />
                             <Link to={"/user"} style={{ float: "right", marginRight: 10 }}
                                 className={"ml-auto btn btn-sm btn-success"}>
@@ -71,7 +72,7 @@ export default function Team(props) {
                                             <td colSpan="13">No Users Available</td>
                                         </tr> :
                                         currentUsers.map((user) => (
-                                            <Row key={user.id} data={user} deleteUser={deleteUser} updateUser={editUser}
+                                            <Row key={user.id} data={user} openConfirmAlert={openConfirmAlert} updateUser={editUser}
                                                 chkLastValidation={chkLastValidation} />
                                         ))}
                                 </tbody>
@@ -116,7 +117,7 @@ function Row(props) {
                     <Button size="sm" variant="outline-primary" onClick={() => props.updateUser(user.id)}
                             style={{ marginRight: 10 }}>
                         <FontAwesomeIcon icon={faEdit} /></Button>
-                    <Button size="sm" variant="outline-danger" onClick={() => props.deleteUser(user.id)}>
+                    <Button size="sm" variant="outline-danger" onClick={() => props.openConfirmAlert(user.id)}>
                         <FontAwesomeIcon icon={faTrash} /></Button>
                     <Button size="sm" variant="outline-success" onClick={() => props.chkLastValidation(user.id)}
                             style={{ marginLeft: 10 }}>

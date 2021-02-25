@@ -55,10 +55,10 @@ export default function User(props) {
                             </Button>
                             <Button style={{ marginRight: 10 }} size="sm" variant="danger" type="reset" onClick={resetUser}>
                                 <FontAwesomeIcon icon={faBan} /> Reset
-							</Button>
+							              </Button>
                             <Button size="sm" variant="info" type="button" onClick={toTeam}>
                                 <FontAwesomeIcon icon={faUndo} /> Back
-							</Button>
+							              </Button>
                         </Card.Footer>
                     </Form>
                 </Card>

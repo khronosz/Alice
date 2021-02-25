@@ -61,3 +61,24 @@ tfoot > tr > td > div:first-child {
 .arrow::before {
     border-right-color: #17a2b8 !important;
 }
+
+.modal-content {
+    background-color: #272B30;
+    color: white;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.modal-header .close {
+    color: white;
+}
+
+.modal-body {
+    text-align: center;
+}
+
+.modal-footer {
+    border-top: none;
+}
