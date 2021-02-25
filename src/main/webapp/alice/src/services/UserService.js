@@ -20,8 +20,6 @@ class UserService extends Service {
 
     findAllUsers = (callback) => this.get("/usernames", callback)
 
-    updateProfile = (user, callback) => this.put("/profile", user, callback)
-
     changePassword = (passwordDto, callback) => this.put("/changePassword", passwordDto, callback)
 }
 

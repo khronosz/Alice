@@ -18,7 +18,7 @@ export default function User(props) {
             {currentUser ?
                 <Card className={"border border-dark bg-dark text-white"}>
                     <Card.Header>
-                        <FontAwesomeIcon icon={id ? faEdit : faUser} />{' '}{id ? "Update User" : "Add User"}
+                        <FontAwesomeIcon icon={id ? faEdit : faUser} />{' '}{id ? "Update " + username : "Add User"}
                     </Card.Header>
                     <Form id="userFormId" onSubmit={id ? updateUser : saveUser} onReset={resetUser}>
                         <Card.Body>

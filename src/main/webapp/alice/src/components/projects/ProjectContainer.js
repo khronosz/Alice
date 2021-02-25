@@ -74,7 +74,13 @@ class ProjectContainer extends React.Component {
         }
     }
 
-    toProjects = () => this.props.history.push("/projects")
+    toProjects = () => {
+        this.props.history.push("/projects")
+    }
+
+    goBack = () => {
+        this.props.history.goBack()
+    }
 
     render() {
         return (
@@ -85,7 +91,7 @@ class ProjectContainer extends React.Component {
                 resetProject: this.resetProject,
                 projectChange: this.projectChange,
                 numberChange: this.numberChange,
-                toProjects: this.toProjects
+                goBack: this.goBack
             }} />
         )
     }

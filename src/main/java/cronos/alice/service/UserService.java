@@ -31,7 +31,6 @@ import cronos.alice.model.dto.PasswordDto;
 import cronos.alice.model.dto.TeamDto;
 import cronos.alice.model.dto.UserDto;
 import cronos.alice.model.dto.UtilPlanDto;
-import cronos.alice.model.entity.Demand;
 import cronos.alice.model.entity.User;
 import cronos.alice.repository.DemandRepository;
 import cronos.alice.repository.UserRepository;

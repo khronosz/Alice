@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,12 +54,14 @@ public class UserController {
 		return new ResponseEntity<>(userService.convertToDto(userCreated), HttpStatus.OK);
 	}
 
-	@PutMapping(value = "/profile", consumes = APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDto> updateProfile(@RequestBody UserDto dto) {
-		User user = userService.findById(dto.getId());
-		userService.updateUserFields(dto, user);
-		User userCreated = userService.save(user);
-		return new ResponseEntity<>(userService.convertToDto(userCreated), HttpStatus.OK);
+	@DeleteMapping(value = "/user/{id}")
+	public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id) {
+		try {
+			userService.deleteById(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		}
 	}
 
 	@PutMapping(value = "/changePassword", consumes = APPLICATION_JSON_VALUE)

@@ -35,13 +35,12 @@ public class ProjectService {
 
 	private final DemandService demandService;
 
-	private final List<Project> projects;
+	private List<Project> projects;
 
 	@Autowired
 	public ProjectService(final ProjectRepository projectRepository, final DemandService demandService) {
 		this.projectRepository = projectRepository;
 		this.demandService = demandService;
-		this.projects = projectRepository.findAll();
 	}
 
 	public Project findById(Long id) {
@@ -93,10 +92,11 @@ public class ProjectService {
 
 	@Transactional
 	public Project save(Project project) {
+		projects = projectRepository.findAll();
 		projects.forEach(p -> {
 			if (p.getSap().equalsIgnoreCase(project.getSap()) && !p.getId().equals(project.getId())) throw new UniqueProjectsSapException("SAP number already exists!");
 		});
-		if (project.getStart() != null && project.getEnd() != null && project.getEnd().isBefore(project.getStart())) {
+		if (project.getStart() != null && project.getEnd() != null && (project.getEnd().isBefore(project.getStart()) || project.getEnd().isEqual(project.getStart()))) {
 			throw new IllegalDateException("End date cannot be earlier than start date!");
 		}
 		log.info("Save project: " + project.getProjectName());
@@ -138,6 +138,7 @@ public class ProjectService {
 	}
 
 	private Boolean isValidProjectId(Long projectId) {
+		projects = projectRepository.findAll();
 		int hint = (int) projects.stream().filter(p -> p.getId().equals(projectId)).count();
 		return hint != 0;
 	}

@@ -16,8 +16,8 @@ import Pagination from "../fragments/Pagination";
 export default function Team(props) {
 
     const {
-        error, users, currentPage, usersPerPage, getExport, chkLastValidation, editUser,
-        deleteUser, messageType, message, resetMessage, setPage,
+        error, currentUser, users, currentPage, usersPerPage, getExport, chkLastValidation, editUser,
+        deleteUser, messageType, message, resetMessage, setPage
     } = props.data
 
     const lastIndex = currentPage * usersPerPage;
@@ -37,7 +37,10 @@ export default function Team(props) {
                 <div>
                     <Card className={"border border-dark bg-dark text-white"}>
                         <Card.Header>
-                            <FontAwesomeIcon icon={faUsers} />{' '}User List
+                            <FontAwesomeIcon icon={faUsers} />{' '}{currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}'s Team
+                            <Button variant="primary"  >
+                                Confirm Dialog
+                            </Button>
                             <ExportButton action={getExport} />
                             <Link to={"/user"} style={{ float: "right", marginRight: 10 }}
                                 className={"ml-auto btn btn-sm btn-success"}>
@@ -111,12 +114,12 @@ function Row(props) {
             <td style={{ textAlign: "center" }}>
                 <ButtonGroup>
                     <Button size="sm" variant="outline-primary" onClick={() => props.updateUser(user.id)}
-                        style={{ marginRight: 10 }}>
+                            style={{ marginRight: 10 }}>
                         <FontAwesomeIcon icon={faEdit} /></Button>
                     <Button size="sm" variant="outline-danger" onClick={() => props.deleteUser(user.id)}>
                         <FontAwesomeIcon icon={faTrash} /></Button>
                     <Button size="sm" variant="outline-success" onClick={() => props.chkLastValidation(user.id)}
-                        style={{ marginLeft: 10 }}>
+                            style={{ marginLeft: 10 }}>
                         <FontAwesomeIcon icon={faCheck} /></Button>
                 </ButtonGroup>
             </td>

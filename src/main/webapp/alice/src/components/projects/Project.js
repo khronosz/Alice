@@ -8,7 +8,7 @@ import { DatePicker, DropDownMenu, TextField } from "../tools/InputElements";
 
 export default function Project(props) {
 
-    const { currentUser, id, updateProject, saveProject, resetProject, projectChange, numberChange, toProjects, message, error } = props.data
+    const { currentUser, id, updateProject, saveProject, resetProject, projectChange, numberChange, goBack, message, error } = props.data
 
     const {
         projectName = "", sap = "", phase = "", status = "", manager = "", backupManager = "", owner = "", customer = "", bu = "", buHu = "",
@@ -69,7 +69,7 @@ export default function Project(props) {
                             <Button style={{ marginRight: 10 }} size="sm" variant="danger" type="reset">
                                 <FontAwesomeIcon icon={faBan} /> Reset
 							</Button>
-                            <Button size="sm" variant="info" type="button" onClick={toProjects}>
+                            <Button size="sm" variant="info" type="button" onClick={goBack}>
                                 <FontAwesomeIcon icon={faUndo} /> Back
 							</Button>
                         </Card.Footer>

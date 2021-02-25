@@ -19,16 +19,18 @@ export default class ProfileContainer extends Component {
     }
 
     findUserById = () => {
-        UserService.findById(this.state.currentUser.id, (response, error) => {
-            if (!error) {
-                this.setState({ user: response})
-            }
-        })
+        if (this.state.currentUser) {
+            UserService.findById(this.state.currentUser.id, (response, error) => {
+                if (!error) {
+                    this.setState({ user: response})
+                } else this.setState({ error: error })
+            })
+        }
     }
 
     saveUser = event => {
         event.preventDefault();
-        UserService.updateProfile(this.state.user, (response, error) => {
+        UserService.update(this.state.user.id, this.state.user, (response, error) => {
             if (!error) {
                 this.setState({ message: "Data Updated Successfully!", messageType: "success" });
                 this.findUserById();

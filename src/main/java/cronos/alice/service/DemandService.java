@@ -40,14 +40,11 @@ public class DemandService {
 
 	private List<Demand> demands;
 
-	private final List<Project> projects;
-
 	@Autowired
 	public DemandService(final DemandRepository demandRepository, final ProjectRepository projectRepository, final UserService userService) {
 		this.demandRepository = demandRepository;
 		this.projectRepository = projectRepository;
 		this.userService = userService;
-		this.projects = projectRepository.findAll();
 	}
 
 	public List<DemandDto> findAllByUserId(Long id) {
@@ -81,21 +78,21 @@ public class DemandService {
 		demands = demandRepository.findAll();
 		demands.forEach(d -> {
 			if (d.getName().equalsIgnoreCase(demand.getName()) && !d.getId().equals(demand.getId())) throw new UniqueDemandNameException("Demand name already exists!");
-			if (d.getMib().equalsIgnoreCase(demand.getMib()) && !d.getId().equals(demand.getId())) throw new UniqueDemandsMibException("Demands MIB already exists!");
+			if (d.getMib().equalsIgnoreCase(demand.getMib()) && !d.getId().equals(demand.getId())) throw new UniqueDemandsMibException("Demand's MIB already exists!");
 			if (demand.getUserId() != null && d.getUserId() != null && d.getUserId().equals(demand.getUserId()) && d.getProjectId().equals(demand.getProjectId())	&& !d.getId().equals(demand.getId())) throw new UniqueDemandsUserProjectException("User already exists on the project!");
 		});
-		if (demand.getProjectStart() != null && demand.getProjectEnd() != null && demand.getProjectEnd().isBefore(demand.getProjectStart())) {
+		if (demand.getProjectStart() != null && demand.getProjectEnd() != null && (demand.getProjectEnd().isBefore(demand.getProjectStart()) || demand.getProjectEnd().isEqual(demand.getProjectStart()))) {
 			throw new IllegalDateException("End date cannot be earlier than start date!");
 		}
 		if (demand.getUserId() != null && demand.getId() != null) {
-			Integer currentUtilization = demandRepository.getTotalUtilizationByUser(demand.getUserId(), demand.getId()) != null ? demandRepository.getTotalUtilizationByUser(demand.getUserId(), demand.getId()) : 0;
+			int currentUtilization = demandRepository.getTotalUtilizationByUser(demand.getUserId(), demand.getId()) != null ? demandRepository.getTotalUtilizationByUser(demand.getUserId(), demand.getId()) : 0;
 			currentUtilization += demand.getUtilization();
 			if (currentUtilization > 100) {
 				throw new UtilizationTooMuchException("Total utilization of the employee cannot be more than 100!");
 			}
 		}
 		if (demand.getUserId() != null && demand.getId() == null) {
-			Integer currentUtilization = demandRepository.getTotalUtilizationByUser(demand.getUserId()) != null ? demandRepository.getTotalUtilizationByUser(demand.getUserId()) : 0;
+			int currentUtilization = demandRepository.getTotalUtilizationByUser(demand.getUserId()) != null ? demandRepository.getTotalUtilizationByUser(demand.getUserId()) : 0;
 			currentUtilization += demand.getUtilization();
 			if (currentUtilization > 100) {
 				throw new UtilizationTooMuchException("Total utilization of the employee cannot be more than 100!");
@@ -154,6 +151,7 @@ public class DemandService {
 	}
 
 	private Boolean isValidProjectId(Long projectId) {
+		final List<Project> projects = projectRepository.findAll();
 		int hint = (int) projects.stream().filter(p -> p.getId().equals(projectId)).count();
 		return hint != 0;
 	}

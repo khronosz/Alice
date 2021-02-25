@@ -2,11 +2,13 @@ import React from 'react';
 import Team from "./Team";
 import UserService from "../../services/UserService";
 import ExportService from '../../services/ExportService';
+import AuthService from "../../services/AuthService";
 
 class TeamContainer extends React.Component {
 
     state = {
         error: "",
+        currentUser: AuthService.getCurrentUser(),
         users: [],
         currentPage: 1,
         usersPerPage: 10,
