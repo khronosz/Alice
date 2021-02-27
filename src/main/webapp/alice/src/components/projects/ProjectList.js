@@ -3,9 +3,10 @@ import MyToast from "../MyToast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faFileContract, faPlus, faTrash, faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 import { ExportButton } from "../tools/ExportButton";
 import Pagination from "../fragments/Pagination";
+import ConfirmAlert from "../fragments/ConfirmAlert";
 
 export function ProjectList(props) {
 
@@ -117,6 +118,8 @@ function Row(props) {
 
     const project = props.data;
 
+  const [show, setShow] = useState(false);
+
     return (
         <tr>
             <td>{project.projectName}</td>
@@ -145,17 +148,16 @@ function Row(props) {
                         variant="outline-warning">D
                     </Button>
                     <Button size="sm"
-                        variant="outline-primary"
-                        onClick={() => props.updateProject(project.id)}
+                        variant="outline-primary" onClick={() => props.updateProject(project.id)}
                         style={{ marginRight: 10 }}>
                         <FontAwesomeIcon icon={faEdit} />
                     </Button>
                     <Button size="sm"
-                        variant="outline-danger"
-                        onClick={() => props.deleteProject(project.id)}>
+                        variant="outline-danger" onClick={() => setShow(prev => !prev)}>
                         <FontAwesomeIcon icon={faTrash} />
                     </Button>
                 </ButtonGroup>
+                <ConfirmAlert show={show} setShow={setShow} target={project.projectName} action={() => props.deleteProject(project.id)}/>
             </td>
         </tr>
     )

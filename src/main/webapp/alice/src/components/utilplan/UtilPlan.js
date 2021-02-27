@@ -2,9 +2,10 @@ import {Button, ButtonGroup, Card, Jumbotron, Table} from "react-bootstrap";
 import MyToast from "../MyToast";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faTrash, faUsers} from "@fortawesome/free-solid-svg-icons";
-import React from "react";
+import React, { useState } from "react";
 import {ExportButton} from "../tools/ExportButton";
 import Pagination from "../fragments/Pagination";
+import ConfirmAlert from "../fragments/ConfirmAlert";
 
 export default function UtilPlan(props) {
 
@@ -81,6 +82,8 @@ function Row(props) {
 
     const user = props.data
 
+    const [show, setShow] = useState(false);
+
     return (
         <tr>
             <td>{user.username}</td>
@@ -97,9 +100,10 @@ function Row(props) {
                     <Button size="sm" variant="outline-primary" onClick={() => props.updateUser(user.id)}
                             style={{marginRight: 10}}>
                         <FontAwesomeIcon icon={faEdit}/></Button>
-                    <Button size="sm" variant="outline-danger" onClick={() => props.deleteUser(user.id)}>
+                    <Button size="sm" variant="outline-danger" onClick={() => setShow(prev => !prev)}>
                         <FontAwesomeIcon icon={faTrash}/></Button>
                 </ButtonGroup>
+                <ConfirmAlert show={show} setShow={setShow} target={user.username} action={() => props.deleteUser(user.id)}/>
             </td>
         </tr>
     )

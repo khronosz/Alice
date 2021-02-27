@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import { ExportButton } from "../tools/ExportButton";
 import Pagination from "../fragments/Pagination";
-import { ConfirmAlert } from "../fragments/ConfirmAlert";
+import ConfirmAlert from "../fragments/ConfirmAlert";
 
 export default function Team(props) {
 
@@ -20,14 +20,6 @@ export default function Team(props) {
     const currentUsers = users.slice(firstIndex, lastIndex);
     const totalPages = users.length !== 0 ? Math.ceil(users.length / usersPerPage) : 1;
 
-    const [show, setShow] = useState(false);
-    let deletedId = null;
-
-    const openConfirmAlert = (userId) => {
-        deletedId = userId;
-        setShow(prev => !prev);
-    };
-
     return (
         <div>
             <div style={{ "display": error ? "block" : "none" }}>
@@ -38,7 +30,6 @@ export default function Team(props) {
             <div>
                 <MyToast clear={true} message={message} type={messageType} reset={() => resetMessage()} />
                 <div>
-                    <ConfirmAlert show={show} setShow={setShow} target={deletedId} action={deleteUser(deletedId)}/>
                     <Card className={"border border-dark bg-dark text-white"}>
                         <Card.Header>
                             <FontAwesomeIcon icon={faUsers} />{' '}{currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}'s Team
@@ -72,7 +63,7 @@ export default function Team(props) {
                                             <td colSpan="13">No Users Available</td>
                                         </tr> :
                                         currentUsers.map((user) => (
-                                            <Row key={user.id} data={user} openConfirmAlert={openConfirmAlert} updateUser={editUser}
+                                            <Row key={user.id} data={user} deleteUser={deleteUser} updateUser={editUser}
                                                 chkLastValidation={chkLastValidation} />
                                         ))}
                                 </tbody>
@@ -99,6 +90,8 @@ function Row(props) {
 
     const user = props.data
 
+    const [show, setShow] = useState(false);
+
     return (
         <tr>
             <td>{user.username}</td>
@@ -117,12 +110,13 @@ function Row(props) {
                     <Button size="sm" variant="outline-primary" onClick={() => props.updateUser(user.id)}
                             style={{ marginRight: 10 }}>
                         <FontAwesomeIcon icon={faEdit} /></Button>
-                    <Button size="sm" variant="outline-danger" onClick={() => props.openConfirmAlert(user.id)}>
+                    <Button size="sm" variant="outline-danger" onClick={() => setShow(prev => !prev)}>
                         <FontAwesomeIcon icon={faTrash} /></Button>
                     <Button size="sm" variant="outline-success" onClick={() => props.chkLastValidation(user.id)}
                             style={{ marginLeft: 10 }}>
                         <FontAwesomeIcon icon={faCheck} /></Button>
                 </ButtonGroup>
+                <ConfirmAlert show={show} setShow={setShow} target={user.username} action={() => props.deleteUser(user.id)}/>
             </td>
         </tr>
     )
