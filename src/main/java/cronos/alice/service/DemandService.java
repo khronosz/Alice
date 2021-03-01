@@ -81,8 +81,11 @@ public class DemandService {
 			if (d.getMib().equalsIgnoreCase(demand.getMib()) && !d.getId().equals(demand.getId())) throw new UniqueDemandsMibException("Demand's MIB already exists!");
 			if (demand.getUserId() != null && d.getUserId() != null && d.getUserId().equals(demand.getUserId()) && d.getProjectId().equals(demand.getProjectId())	&& !d.getId().equals(demand.getId())) throw new UniqueDemandsUserProjectException("User already exists on the project!");
 		});
-		if (demand.getProjectStart() != null && demand.getProjectEnd() != null && (demand.getProjectEnd().isBefore(demand.getProjectStart()) || demand.getProjectEnd().isEqual(demand.getProjectStart()))) {
+		if (demand.getProjectStart() != null && demand.getProjectEnd() != null && demand.getProjectEnd().isBefore(demand.getProjectStart())) {
 			throw new IllegalDateException("End date cannot be earlier than start date!");
+		}
+		if (demand.getProjectStart() != null && demand.getProjectEnd() != null && demand.getProjectEnd().isEqual(demand.getProjectStart())) {
+			throw new IllegalDateException("End date cannot be the same as start date!");
 		}
 		if (demand.getUserId() != null && demand.getId() != null) {
 			int currentUtilization = demandRepository.getTotalUtilizationByUser(demand.getUserId(), demand.getId()) != null ? demandRepository.getTotalUtilizationByUser(demand.getUserId(), demand.getId()) : 0;

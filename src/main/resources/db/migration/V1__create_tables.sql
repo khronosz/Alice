@@ -71,8 +71,7 @@ CREATE TABLE `projects` (
      `long_desc` VARCHAR(5000) NULL DEFAULT NULL COLLATE 'utf8_hungarian_ci',
      `technology` VARCHAR(500) NULL DEFAULT NULL COLLATE 'utf8_hungarian_ci',
      PRIMARY KEY (`id`),
-     UNIQUE INDEX `UNIQUE_PROJECTS_SAP` (`sap`),
-     CONSTRAINT `CHECK_PROJECTS_START_END` CHECK (`start` <= `end`)
+     UNIQUE INDEX `UNIQUE_PROJECTS_SAP` (`sap`)
 )
     COLLATE='utf8_hungarian_ci'
     ENGINE=InnoDB
@@ -92,9 +91,7 @@ CREATE TABLE `demands` (
     UNIQUE INDEX `UNIQUE_DEMANDS_MIB` (`mib`),
     CONSTRAINT `UNIQUE_DEMANDS_USER_PROJECT` UNIQUE (`user_id`, `project_id`),
     CONSTRAINT `FK_USER_ID` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-    CONSTRAINT `FK_PROJECT_ID` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `CHECK_DEMANDS_START_END` CHECK (`project_start` <= `project_end`),
-    CONSTRAINT `CHECK_DEMANDS_UTILIZATION` CHECK (`utilization` <= 100)
+    CONSTRAINT `FK_PROJECT_ID` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
 )
     COLLATE='utf8_hungarian_ci'
     ENGINE=InnoDB
