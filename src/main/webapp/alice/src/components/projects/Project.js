@@ -22,7 +22,7 @@ export default function Project(props) {
                 <Card className={"border border-dark bg-dark text-white"}>
                     <Card.Header>
                         <FontAwesomeIcon icon={id ? faEdit : faFileContract} />
-                        {id ? "Update Project" : "Add Project"}
+                        {id ? " Update Project" : " Add Project"}
                     </Card.Header>
                     <Form id="projectFormId" onSubmit={id ? updateProject : saveProject} onReset={resetProject}>
                         <Card.Body>

@@ -24,10 +24,8 @@ export function Login(props) {
                                 </Form.Group>
                             </Form.Row>
                         )}
+                        <Button size="sm" variant="info" type="submit" style={{ width: '12rem', marginTop: '30px' }}>Login</Button>
                     </Card.Body>
-                    <Card.Footer style={{ "textAlign": "center" }}>
-                        <Button size="sm" variant="info" type="submit" style={{ width: '12rem' }}>Login</Button>
-                    </Card.Footer>
                 </Form>
             </Card>
         </div>

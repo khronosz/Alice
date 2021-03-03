@@ -7,10 +7,6 @@ class TempService {
 	getModeratorBoard() {
 		return axios.get(API_URL + "moderator", AuthService.header());
 	}
-
-	getAdminBoard() {
-		return axios.get(API_URL + "admin", AuthService.header());
-	}
 }
 
 export default new TempService()

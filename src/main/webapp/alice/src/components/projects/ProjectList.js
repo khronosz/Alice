@@ -1,12 +1,13 @@
 import { Button, ButtonGroup, Card, Jumbotron, Table, InputGroup, FormControl } from "react-bootstrap";
 import MyToast from "../MyToast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faFileContract, faPlus, faTrash, faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPlus, faTrash, faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import { ExportButton } from "../tools/ExportButton";
 import Pagination from "../fragments/Pagination";
 import ConfirmAlert from "../fragments/ConfirmAlert";
+import * as AiIcons from "react-icons/ai";
 
 export function ProjectList(props) {
 
@@ -37,7 +38,7 @@ export function ProjectList(props) {
                     <Card className={"border border-dark bg-dark text-white"}>
                         <Card.Header>
                             <div style={{ float: "left" }}>
-                                <FontAwesomeIcon icon={faFileContract} />{' '}Project List
+                              <AiIcons.AiFillProject />{' '}Project List
                             </div>
                             <ExportButton action={getExport} />
                             <Link to={"/project"} style={{ float: "right", marginRight: 10 }}
