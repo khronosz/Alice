@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 import AuthService from "../../services/AuthService";
 import Demand from "./Demand";
 import ProjectService from "../../services/ProjectService";

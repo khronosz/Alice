@@ -18,7 +18,7 @@ import UtilPlanContainer from "./utilplan/UtilPlanContainer";
 import ChangePasswordContainer from "./password/ChangePasswordContainer";
 import UserDemandsContainer from "./demands/UserDemandsContainer";
 import DashboardContainer from "./boards/user/DashboardContainer";
-import AdminBoard from "./boards/admin/AdminBoard";
+import AdminBoardContainer from "./boards/admin/AdminBoardContainer";
 
 export const API_URL = "http://localhost:8080"
 
@@ -44,7 +44,7 @@ class App extends Component {
                         <Route exact path="/project/:id/demand/:did" component={DemandContainer} />
                         <Route exact path="/project/:id/demands" component={DemandListContainer} />
                         <Route exact path="/moderator" component={ModeratorBoardContainer} />
-                        <Route exact path="/admin" component={AdminBoard} />
+                        <Route exact path="/admin" component={AdminBoardContainer} />
                         <Route exact path="/utilization" component={UtilPlanContainer} />
                         <Route exact path="/changePassword" component={ChangePasswordContainer} />
                         <Route exact path="/user/:id/demands" component={UserDemandsContainer} />
