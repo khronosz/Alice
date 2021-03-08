@@ -4,7 +4,7 @@ import * as AiIcons from "react-icons/ai";
 
 function Projects() {
   return (
-    <Card className={"border border-dark bg-dark text-white"} style={{width: "80%", marginTop: "0px"}}>
+    <Card className={"border border-dark bg-dark text-white admin-card"}>
       <Card.Header>
         <AiIcons.AiFillProject />{' '}Projects
       </Card.Header>

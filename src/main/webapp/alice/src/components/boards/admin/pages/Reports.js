@@ -4,12 +4,12 @@ import * as IoIcons from "react-icons/io";
 
 function Reports() {
   return (
-    <Card className={"border border-dark bg-dark text-white"} style={{width: "80%", marginTop: "0px"}}>
+    <Card className={"border border-dark bg-dark text-white admin-card"}>
       <Card.Header>
-        <IoIcons.IoIosPaper />{' '}Reports
+        <IoIcons.IoIosPaper/>{' '}Reports
       </Card.Header>
     </Card>
-);
+  );
 }
 
 export default Reports;
