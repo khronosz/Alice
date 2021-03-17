@@ -8,6 +8,8 @@ public interface CustomizedUserRepository {
 
 	List<Tuple> findAllTeamDto(Long directManagerId);
 
+	List<Tuple> findAllTeamDtoForAdmin();
+
 	List<Tuple> findAllUtilPlanDto();
 
 	List<Tuple> initProjectNamesForDto();

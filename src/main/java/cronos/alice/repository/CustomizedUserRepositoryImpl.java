@@ -42,6 +42,28 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository {
 	}
 
 	@Override
+	public List<Tuple> findAllTeamDtoForAdmin() {
+		return new JPAQuery<>(entityManager)
+				.select(user.id,
+						user.username,
+						user.job,
+						user.department,
+						user.email,
+						user.city,
+						user.level,
+						demand.utilization.sum(),
+						demand.projectEnd.min(),
+						user.notes,
+						user.lastValidation)
+				.from(user)
+				.leftJoin(demand)
+				.on(demand.userId.eq(user.id))
+				.groupBy(user.username)
+				.orderBy(user.username.asc())
+				.fetch();
+	}
+
+	@Override
 	public List<Tuple> findAllUtilPlanDto() {
 		QUser directManager = new QUser("directManager");
 		return new JPAQuery<>(entityManager)

@@ -3,7 +3,7 @@ import {Jumbotron} from "react-bootstrap";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Sidebar from "./menu/Sidebar";
 import Reports from "./pages/Reports";
-import Users from "./pages/Users";
+import AllUsersContainer from "./pages/AllUsersContainer";
 import Projects from "./pages/Projects";
 import PasswordReset from "./pages/PasswordReset";
 import Groups from "./pages/Groups";
@@ -24,7 +24,7 @@ export default function AdminBoard(props) {
         <Router>
           <Sidebar />
           <Switch>
-            <Route path='/admin/users' component={Users} />
+            <Route path='/admin/users' component={AllUsersContainer} />
             <Route path='/admin/projects' component={Projects} />
             <Route path='/admin/demands' component={Demands} />
             <Route path='/admin/reports' component={Reports} />

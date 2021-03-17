@@ -2,7 +2,7 @@ import { Service } from "./Service";
 
 class AdminService extends Service {
 
-  findAllUsers = (callback) => this.get("/admin", callback)
+  findAllUsers = (callback) => this.get("/admin/users", callback)
 
 }
 

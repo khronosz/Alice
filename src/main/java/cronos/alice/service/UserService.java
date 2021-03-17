@@ -98,6 +98,13 @@ public class UserService {
 		return dtoList;
 	}
 
+	public List<TeamDto> findAllTeamDtoForAdmin() {
+		List<TeamDto> dtoList = userRepository.findAllTeamDtoForAdmin().stream().map(TeamDto::new).collect(Collectors.toList());
+		List<Tuple> projectNames = userRepository.initProjectNamesForDto();
+		dtoList.forEach(dto -> dto.setProjectNames(concat(projectNames, dto.getId())));
+		return dtoList;
+	}
+
 	private String concat(final List<Tuple> projectNames, final Long id) {
 		return projectNames.stream().filter(projectName -> Objects.equals(id, projectName.get(0, Long.class)))
 				.map(projectName -> projectName.get(1, String.class))
